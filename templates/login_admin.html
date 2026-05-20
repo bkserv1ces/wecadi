@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WECADI - Accès Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+                    colors: { gold: '#D4AF37', goldLight: '#F3E5AB', deepNavy: '#001A33' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(212, 175, 55, 0.3); }
+    </style>
+</head>
+<body class="bg-black min-h-screen flex items-center justify-center font-sans">
+    
+    <div class="glass-panel p-10 rounded-xl w-[90%] max-w-md shadow-[0_0_40px_rgba(212,175,55,0.15)]">
+        <div class="text-center mb-8">
+            <h2 class="text-gold font-bold tracking-[0.3em] text-[10px] uppercase mb-2">Sécurité</h2>
+            <h1 class="text-3xl font-bold text-white tracking-widest uppercase">Admin</h1>
+        </div>
+
+        {% with messages = get_flashed_messages(category_filter=["admin_error"]) %}
+            {% if messages %}
+                <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] uppercase tracking-widest p-3 rounded-md mb-5 text-center">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="/admin_login" method="POST" class="space-y-6">
+            <div>
+                <label for="password" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-2">Mot de passe maître</label>
+                <input type="password" id="password" name="password" required 
+                       class="w-full bg-black border border-white/20 rounded-md p-3 text-white focus:outline-none focus:border-gold transition text-center tracking-widest"
+                       placeholder="••••••••">
+            </div>
+            <button type="submit" class="w-full py-3 rounded-md text-xs font-bold uppercase tracking-widest text-black bg-gold hover:bg-goldLight transition">
+                Déverrouiller
+            </button>
+            <a href="/" class="block text-center mt-4 text-[10px] text-gray-500 hover:text-white uppercase tracking-widest transition">Retour au site</a>
+        </form>
+    </div>
+
+</body>
+</html>

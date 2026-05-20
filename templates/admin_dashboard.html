@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WECADI - Panneau de Contrôle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+          colors: { gold: '#D4AF37', goldLight: '#F3E5AB', magentaCustom: '#E91E63' }
+        }
+      }
+    }
+  </script>
+  <style>
+    .pulse-green {
+      height: 8px;
+      width: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+      }
+
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+      }
+
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-[#050507] text-white min-h-screen font-sans pb-12 selection:bg-gold selection:text-black">
+
+  <div class="max-w-7xl mx-auto p-4 sm:p-8">
+    <header class="flex justify-between items-center border-b border-white/10 pb-6 mb-8">
+      <div>
+        <h1 class="text-xl sm:text-3xl font-bold tracking-widest text-gold uppercase">Dashboard</h1>
+        <p class="text-[9px] sm:text-xs text-gray-400 uppercase tracking-[0.2em] mt-1">Administration WECADI</p>
+      </div>
+      <a href="/admin_logout"
+        class="flex items-center gap-2 px-4 py-2 border border-white/20 rounded-md text-[10px] font-bold uppercase tracking-widest text-gray-300 hover:bg-white hover:text-black transition">
+        <i class="fa-solid fa-power-off"></i> Déconnexion
+      </a>
+    </header>
+
+    <div
+      class="flex flex-row items-center justify-between bg-white/5 border border-white/10 rounded-xl p-4 sm:p-6 mb-8 shadow-2xl backdrop-blur-md">
+      <div class="flex-1 text-center border-r border-white/10">
+        <p class="text-[8px] sm:text-[10px] text-blue-400 uppercase tracking-widest mb-1">Présents</p>
+        <p class="text-2xl sm:text-4xl font-bold text-blue-400">{{ stats.presents }}</p>
+      </div>
+      <div class="flex-1 text-center border-r border-white/10">
+        <p class="text-[8px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Inscrits</p>
+        <p class="text-2xl sm:text-4xl font-bold text-white">{{ stats.total }}</p>
+      </div>
+      <div class="flex-1 text-center border-r border-white/10">
+        <p class="text-[8px] sm:text-[10px] text-green-500 uppercase tracking-widest mb-1">Confirmés</p>
+        <p class="text-2xl sm:text-4xl font-bold text-green-500">{{ stats.confirmes }}</p>
+      </div>
+      <div class="flex-1 text-center">
+        <p class="text-[8px] sm:text-[10px] text-magentaCustom uppercase tracking-widest mb-1">En Attente</p>
+        <p class="text-2xl sm:text-4xl font-bold text-magentaCustom">{{ stats.en_attente }}</p>
+      </div>
+    </div>
+
+    <form method="GET" action="/admin_dashboard" class="mb-10 flex flex-col sm:flex-row gap-3">
+      <div class="relative flex-grow">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i
+            class="fa-solid fa-magnifying-glass text-gold/50"></i></div>
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Rechercher nom, email, tél ou Code QR..."
+          class="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-11 pr-4 text-sm text-white">
+      </div>
+      <button type="submit"
+        class="bg-gold text-black px-6 py-3 font-bold text-[10px] uppercase tracking-widest rounded-lg">Chercher</button>
+    </form>
+
+    <div class="space-y-3 sm:space-y-0 sm:bg-white/5 sm:border sm:border-white/10 sm:rounded-xl">
+      {% for p in prenotazioni %}
+      <div
+        class="grid grid-cols-1 sm:grid-cols-12 gap-4 p-5 border border-white/10 rounded-xl sm:border-0 sm:border-b sm:border-white/5 items-center">
+        <div class="col-span-1"><span class="text-gold font-bold">#{{ p[0] }}</span></div>
+        <div class="col-span-3 flex flex-col">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-white">{{ p[1] }}</span>
+            {% if p[4] == 'Présent' %}<span class="pulse-green"></span>{% endif %}
+          </div>
+          <span class="text-[10px] text-gray-400">{{ p[2] }}</span>
+          {% if p[5] %}
+          <span class="text-[9px] text-gold font-mono tracking-widest mt-0.5">Code: {{ p[5] }}</span>{% endif %}
+        </div>
+        <div class="col-span-3"><span class="font-bold">{{ p[1] }}</span><br><span class="text-[10px] text-gray-400">{{
+            p[2] }}</span></div>
+        <div class="col-span-3 text-xs">{{ p[3] }}</div>
+        <div class="col-span-2 text-[9px] font-bold uppercase">{{ p[4] }}</div>
+        <div class="col-span-3 text-right flex justify-end gap-2">
+          {% if p[4] != 'Confirmé' %}<a href="/admin/valider/{{ p[0] }}"
+            class="px-3 py-1 bg-gold text-black rounded text-[9px] font-bold uppercase">Valider</a>{% endif %}
+          {% if p[4] == 'Confirmé' %}<button onclick="openSuspendModal('/admin/suspendre/{{ p[0] }}')"
+            class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded text-[9px] font-bold uppercase">Suspendre</button>{%
+          endif %}
+          <button onclick="openDeleteModal('/admin/supprimer/{{ p[0] }}')"
+            class="px-3 py-1 bg-red-500/20 text-red-500 rounded text-[9px] font-bold uppercase">Supprimer</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div id="suspendModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 opacity-0 pointer-events-none transition-opacity">
+    <div class="bg-[#050507] p-8 rounded-2xl max-w-sm w-[90%] text-center">
+      <h3 class="text-lg font-bold mb-4">Suspendre l'accès</h3>
+      <div class="flex gap-3"><button onclick="closeSuspendModal()" class="flex-1 py-3 text-gray-400">Annuler</button><a
+          id="confirmSuspendBtn" href="#" class="flex-1 py-3 bg-orange-600 rounded-lg">Confirmer</a></div>
+    </div>
+  </div>
+
+  <div id="deleteModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 opacity-0 pointer-events-none transition-opacity">
+    <div class="bg-[#050507] p-8 rounded-2xl max-w-sm w-[90%] text-center">
+      <h3 class="text-lg font-bold mb-4">Attention</h3>
+      <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 text-gray-400">Annuler</button><a
+          id="confirmDeleteBtn" href="#" class="flex-1 py-3 bg-red-600 rounded-lg">Confirmer</a></div>
+    </div>
+  </div>
+
+  <button onclick="document.getElementById('scanModal').classList.remove('hidden'); startScan();"
+    class="fixed bottom-6 right-6 bg-gold text-black w-14 h-14 rounded-full shadow-2xl flex items-center justify-center z-50"><i
+      class="fa-solid fa-camera text-xl"></i></button>
+
+  <div id="scanModal" class="hidden fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center p-4">
+    <div id="reader" class="w-full max-w-sm aspect-square rounded-xl overflow-hidden border-2 border-gold"></div>
+    <input type="text" id="manualCode" placeholder="Code manuel"
+      class="w-full mt-4 p-2 bg-white/10 rounded text-center text-white">
+    <button onclick="processCode()"
+      class="w-full mt-2 py-2 bg-gold text-black font-bold uppercase text-[10px] rounded">Valider Code</button>
+    <button onclick="closeScanModal()" class="mt-4 text-gray-500 uppercase text-[10px]">Fermer</button>
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script>
+    const html5QrCode = new Html5Qrcode("reader");
+    function processCode() { const code = document.getElementById('manualCode').value; if (code) window.location.href = "/scan_manual/" + code; }
+    function startScan() { html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (decodedText) => { window.location.href = "/scan_manual/" + decodedText; }); }
+    function closeScanModal() { document.getElementById('scanModal').classList.add('hidden'); html5QrCode.stop(); }
+    function openDeleteModal(url) { document.getElementById('confirmDeleteBtn').href = url; document.getElementById('deleteModal').classList.remove('opacity-0', 'pointer-events-none'); }
+    function closeDeleteModal() { document.getElementById('deleteModal').classList.add('opacity-0', 'pointer-events-none'); }
+    function openSuspendModal(url) { document.getElementById('confirmSuspendBtn').href = url; document.getElementById('suspendModal').classList.remove('opacity-0', 'pointer-events-none'); }
+    function closeSuspendModal() { document.getElementById('suspendModal').classList.add('opacity-0', 'pointer-events-none'); }
+  </script>
+</body>
+
+</html>

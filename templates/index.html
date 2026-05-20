@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WECADI - Cérémonie Prestige</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+                    colors: {
+                        gold: '#D4AF37',
+                        goldDark: '#B8860B',
+                        goldLight: '#F3E5AB',
+                        magentaCustom: '#E91E63'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glass-banner {
+            background: rgba(10, 10, 12, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
+        }
+        .text-gold-gradient {
+            background: linear-gradient(to bottom, #FFF5CC 0%, #D4AF37 50%, #8A6623 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Classe per animazioni fluide */
+        .fade-transition {
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen w-full flex flex-col items-center justify-center bg-black overflow-x-hidden font-sans">
+
+    <div class="absolute inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop" 
+             alt="Sala Cinema WECADI" 
+             class="w-full h-full object-cover opacity-45">
+        <div class="absolute inset-0 bg-gradient-to-tr from-black via-black/60 to-transparent"></div>
+    </div>
+
+    <header class="absolute top-6 right-6 z-20">
+        <a href="/login" class="text-[11px] sm:text-xs font-semibold text-goldLight tracking-[0.2em] uppercase hover:text-white transition duration-300 border-b border-gold/20 hover:border-white pb-1">
+            Connexion
+        </a>
+    </header>
+
+    <main class="relative z-10 w-[92%] max-w-[550px] my-8">
+        <div class="glass-banner rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center space-y-8 relative min-h-[450px]">
+            
+            <div class="space-y-3">
+                <h2 class="text-magentaCustom font-bold tracking-[0.25em] text-[10px] sm:text-xs uppercase">
+                    Cérémonie de Remise de Prix & Projection Exclusive
+                </h2>
+                <h1 class="text-6xl sm:text-7xl font-bold tracking-tight text-gold-gradient py-1">
+                    WECADI
+                </h1>
+                <div class="h-[1px] w-20 bg-gradient-to-r from-transparent via-gold/50 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            {% if success %}
+            
+            <div class="w-full flex flex-col items-center justify-center space-y-6 py-4 animate-[fadeIn_0.5s_ease-in-out]">
+                <div class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center border border-gold shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                    <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <div class="text-center space-y-3">
+                    <h3 class="text-xl text-goldLight font-bold uppercase tracking-widest">Réservation Effectuée</h3>
+                    <p class="text-gray-300 text-sm font-light leading-relaxed px-4">
+                        Votre demande a bien été enregistrée. Vous pouvez vous connecter à tout moment <strong>avec votre email et votre numéro de téléphone</strong> pour consulter le statut de votre invitation.
+                    </p>
+                </div>
+                
+                <div class="w-full pt-6">
+                    <a href="/" class="block w-full group relative bg-gradient-to-r from-goldDark via-gold to-goldLight p-[1px] rounded-lg overflow-hidden transition-all duration-500 hover:shadow-[0_0_35px_rgba(212,175,55,0.5)] active:scale-[0.99]">
+                        <div class="bg-black/10 group-hover:bg-transparent transition duration-500 py-4 rounded-lg">
+                            <span class="text-black font-bold text-xs sm:text-sm uppercase tracking-[0.2em]">
+                                Retour à l'accueil
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+
+            <div id="info-block" class="w-full fade-transition opacity-100 flex flex-col space-y-6">
+                <div class="space-y-6 w-full bg-black/30 p-6 rounded-xl border border-white/5">
+                    <div class="flex flex-col space-y-3 text-sm sm:text-base">
+                        <p class="text-white font-medium tracking-wide">
+                            <span class="text-gold font-semibold uppercase tracking-wider text-xs mr-2">Date :</span> 20 Mai 2026, 20h00
+                        </p>
+                        <p class="text-white font-medium tracking-wide">
+                            <span class="text-gold font-semibold uppercase tracking-wider text-xs mr-2">Lieu :</span> Ferrara, Émilie-Romagne
+                        </p>
+                    </div>
+                    <div class="h-[1px] w-full bg-white/5"></div>
+                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed px-2 italic font-light">
+                        Plongez dans l'univers du cinéma avec une projection privée suivie d'une prestigieuse remise de prix.
+                    </p>
+                </div>
+
+                <div class="w-full pt-2">
+                    <button type="button" onclick="mostraModulo()" 
+                            class="group relative w-full bg-gradient-to-r from-goldDark via-gold to-goldLight p-[1px] rounded-lg overflow-hidden transition-all duration-500 hover:shadow-[0_0_35px_rgba(212,175,55,0.5)] active:scale-[0.99]">
+                        <div class="bg-black/10 group-hover:bg-transparent transition duration-500 py-4 rounded-lg">
+                            <span class="text-black font-bold text-xs sm:text-sm uppercase tracking-[0.2em]">
+                                Réserver ma place
+                            </span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div id="form-block" class="w-full px-0 sm:px-4 fade-transition opacity-0 hidden flex-col space-y-4">
+                <div class="bg-black/40 p-6 rounded-xl border border-gold/30 text-left">
+                    <h3 class="text-goldLight font-bold uppercase tracking-widest text-sm mb-4 text-center">Vos Informations</h3>
+                    
+                    <form action="/" method="POST" class="space-y-4">
+                        <div>
+                            <label for="nome" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-1">Nom Complet</label>
+                            <input type="text" id="nome" name="nome" required 
+                                   class="w-full bg-black/60 border border-white/10 rounded-md p-3 text-white focus:outline-none focus:border-gold transition">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-1">Email</label>
+                            <input type="email" id="email" name="email" required 
+                                   class="w-full bg-black/60 border border-white/10 rounded-md p-3 text-white focus:outline-none focus:border-gold transition">
+                        </div>
+                        <div>
+                            <label for="telefono" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-1">Téléphone</label>
+                            <input type="tel" id="telefono" name="telefono" required 
+                                   class="w-full bg-black/60 border border-white/10 rounded-md p-3 text-white focus:outline-none focus:border-gold transition">
+                        </div>
+
+                        <div class="pt-4 flex space-x-3">
+                            <button type="button" onclick="mostraInfo()" 
+                                    class="w-1/3 py-3 rounded-md text-xs font-bold uppercase tracking-widest text-gray-400 border border-gray-600 hover:text-white hover:border-white transition">
+                                Retour
+                            </button>
+                            <button type="submit" 
+                                    class="w-2/3 py-3 rounded-md text-xs font-bold uppercase tracking-widest text-black bg-gradient-to-r from-gold to-goldLight hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition">
+                                Valider
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% endif %}
+
+            <p class="text-[9px] text-gold/50 tracking-widest uppercase mt-auto pt-6">
+                Places limitées • Événement Privé sur Invitation
+            </p>
+        </div>
+    </main>
+
+    <footer class="absolute bottom-4 z-20 text-[9px] text-gray-600 tracking-widest uppercase">
+        © WECADI 2026 • Ferrara, Italia
+    </footer>
+
+    {% if not success %}
+    <script>
+        const infoBlock = document.getElementById('info-block');
+        const formBlock = document.getElementById('form-block');
+
+        function mostraModulo() {
+            infoBlock.classList.remove('opacity-100');
+            infoBlock.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                infoBlock.classList.add('hidden');
+                formBlock.classList.remove('hidden');
+                void formBlock.offsetWidth;
+                formBlock.classList.remove('opacity-0');
+                formBlock.classList.add('opacity-100');
+            }, 500);
+        }
+
+        function mostraInfo() {
+            formBlock.classList.remove('opacity-100');
+            formBlock.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                formBlock.classList.add('hidden');
+                infoBlock.classList.remove('hidden');
+                void infoBlock.offsetWidth;
+                infoBlock.classList.remove('opacity-0');
+                infoBlock.classList.add('opacity-100');
+            }, 500);
+        }
+    </script>
+    {% endif %}
+</body>
+</html>
