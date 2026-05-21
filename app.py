@@ -1,10 +1,9 @@
 import os
 import secrets
-import qrcode
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from supabase import create_client, Client
 
-# Initialisation Supabase
+# Inizializzazione Supabase
 url: str = "https://nujvctqiggtxyeewvexu.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51anZjdHFpZ2d0eHllZXd2ZXh1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTI5OTE3NCwiZXhwIjoyMDk0ODc1MTc0fQ.nwJXQxvj8YNWjZnEoWd0len471k2sjJa2BlUfGxDk6U"
 supabase: Client = create_client(url, key)
@@ -12,7 +11,7 @@ supabase: Client = create_client(url, key)
 app = Flask(__name__)
 app.secret_key = 'wecadi_prestige_key_2026'
 
-os.makedirs('static/qrcodes', exist_ok=True)
+# Password fissa per l'amministratore
 ADMIN_PASSWORD = 'wecadi2026'
 
 # ----------------- ROTTE PUBBLICHE ----------------- #
@@ -21,6 +20,7 @@ ADMIN_PASSWORD = 'wecadi2026'
 def home():
     success = False 
     if request.method == 'POST':
+        # Inserimento di una nuova prenotazione nel database
         supabase.table("prenotazioni").insert({
             "nome": request.form.get('nome'),
             "email": request.form.get('email'),
@@ -39,8 +39,7 @@ def login_user():
     email = request.form.get('email')
     telefono = request.form.get('telefono')
     
-    # Optimisation : Sélectionnez uniquement les champs nécessaires
-    # et utilisez un filtre strict
+    # Ottimizzazione: seleziona solo i campi necessari e usa un filtro rigoroso
     try:
         response = supabase.table("prenotazioni")\
             .select("id, email, telefono")\
@@ -62,12 +61,14 @@ def login_user():
 
 @app.route('/dashboard')
 def user_dashboard():
+    # Controllo di sicurezza per l'utente
     if 'user_id' not in session: return redirect(url_for('login_page'))
     user_data = supabase.table("prenotazioni").select("*").eq("id", session['user_id']).execute().data[0]
     return render_template('user_dashboard.html', user=list(user_data.values()))
 
 @app.route('/logout')
 def logout():
+    # Rimozione dell'ID utente dalla sessione
     session.pop('user_id', None)
     return redirect(url_for('home'))
 
@@ -90,7 +91,7 @@ def admin_dashboard():
     
     data = supabase.table("prenotazioni").select("*").order("id", desc=True).execute().data
     
-    # Calcul des stats côté application pour plus de simplicité
+    # Calcolo delle statistiche lato applicazione
     stats = {
         'total': len(data),
         'confirmes': len([p for p in data if p['stato'] == 'Confirmé']),
@@ -102,7 +103,7 @@ def admin_dashboard():
     if query:
         data = [p for p in data if query in str(p['nome']).lower() or query in str(p['email']).lower() or query in str(p['code_qr'] or '').lower()]
     
-    # Conversion des dictionnaires Supabase en listes pour votre template existant
+    # Conversione dei dizionari Supabase in liste per il template
     prenotazioni = [[p['id'], p['nome'], p['email'], p['telefono'], p['stato'], p.get('code_qr')] for p in data]
     
     return render_template('admin_dashboard.html', prenotazioni=prenotazioni, stats=stats, search_query=query)
@@ -111,13 +112,10 @@ def admin_dashboard():
 def admin_valider(id):
     if not session.get('admin_logged_in'): return redirect(url_for('admin_page'))
     
+    # Generazione del codice esadecimale unico (senza salvare file fisici)
     nuovo_code = secrets.token_hex(3).upper()
-    qr = qrcode.QRCode(version=1, box_size=10, border=2)
-    qr.add_data(nuovo_code)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-    img.save(f"static/qrcodes/qr_{id}.png")
 
+    # Aggiornamento dello stato nel database
     supabase.table("prenotazioni").update({"stato": "Confirmé", "code_qr": nuovo_code}).eq("id", id).execute()
     return redirect(url_for('admin_dashboard'))
 
@@ -137,14 +135,14 @@ def scan_manual(code):
 @app.route('/admin/suspendre/<int:id>')
 def admin_suspendre(id):
     if not session.get('admin_logged_in'): return redirect(url_for('admin_page'))
-    if os.path.exists(f"static/qrcodes/qr_{id}.png"): os.remove(f"static/qrcodes/qr_{id}.png")
+    # Sospensione dell'utente (nessun file da eliminare)
     supabase.table("prenotazioni").update({"stato": "Suspendu"}).eq("id", id).execute()
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/supprimer/<int:id>')
 def admin_supprimer(id):
     if not session.get('admin_logged_in'): return redirect(url_for('admin_page'))
-    if os.path.exists(f"static/qrcodes/qr_{id}.png"): os.remove(f"static/qrcodes/qr_{id}.png")
+    # Eliminazione dell'utente dal database (nessun file da eliminare)
     supabase.table("prenotazioni").delete().eq("id", id).execute()
     return redirect(url_for('admin_dashboard'))
 

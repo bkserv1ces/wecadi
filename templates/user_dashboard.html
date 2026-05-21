@@ -127,8 +127,7 @@
                 {% if user[4] == 'Confirmé' %}
                 <div
                     class="bg-white p-3 rounded-xl shadow-[0_0_30px_rgba(212,175,55,0.4)] transform hover:scale-105 transition duration-500">
-                    <img src="{{ url_for('static', filename='qrcodes/qr_' ~ user[0] ~ '.png') }}" alt="QR Code WECADI"
-                        class="w-48 h-48 object-contain">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ user[5] }}" alt="QR Code" class="rounded-xl border-4 border-gold">
                 </div>
                 <div class="space-y-1">
                     <p class="text-[10px] text-gold uppercase tracking-widest text-center font-bold">Billet valide</p>
