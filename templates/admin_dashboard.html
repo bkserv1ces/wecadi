@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
+    /* Configurazione Tailwind */
     tailwind.config = {
       theme: {
         extend: {
@@ -19,6 +20,7 @@
     }
   </script>
   <style>
+    /* Animazione per i presenti */
     .pulse-green {
       height: 8px;
       width: 8px;
@@ -69,11 +71,11 @@
         <p class="text-2xl sm:text-4xl font-bold text-blue-400">{{ stats.presents }}</p>
       </div>
       <div class="flex-1 text-center border-r border-white/10">
-        <p class="text-[8px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Inscrits</p>
+        <p class="text-[8px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Reservés</p>
         <p class="text-2xl sm:text-4xl font-bold text-white">{{ stats.total }}</p>
       </div>
       <div class="flex-1 text-center border-r border-white/10">
-        <p class="text-[8px] sm:text-[10px] text-green-500 uppercase tracking-widest mb-1">Confirmés</p>
+        <p class="text-[8px] sm:text-[10px] text-green-500 uppercase tracking-widest mb-1">Payés</p>
         <p class="text-2xl sm:text-4xl font-bold text-green-500">{{ stats.confirmes }}</p>
       </div>
       <div class="flex-1 text-center">
@@ -82,41 +84,74 @@
       </div>
     </div>
 
-    <form method="GET" action="/admin_dashboard" class="mb-10 flex flex-col sm:flex-row gap-3">
+    <div class="mb-8 flex flex-col sm:flex-row gap-3">
       <div class="relative flex-grow">
-        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i
-            class="fa-solid fa-magnifying-glass text-gold/50"></i></div>
-        <input type="text" name="q" value="{{ search_query }}" placeholder="Rechercher nom, email, tél ou Code QR..."
-          class="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-11 pr-4 text-sm text-white">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <i class="fa-solid fa-magnifying-glass text-gold/50"></i>
+        </div>
+        <input type="text" id="searchInput" placeholder="Rechercher nom, tél, ID client ou Code QR..."
+          class="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-11 pr-4 text-sm text-white focus:border-gold focus:outline-none transition">
       </div>
-      <button type="submit"
-        class="bg-gold text-black px-6 py-3 font-bold text-[10px] uppercase tracking-widest rounded-lg">Chercher</button>
-    </form>
+    </div>
 
-    <div class="space-y-3 sm:space-y-0 sm:bg-white/5 sm:border sm:border-white/10 sm:rounded-xl">
+    <div class="space-y-3 sm:space-y-0 sm:bg-white/5 sm:border sm:border-white/10 sm:rounded-xl" id="prenotazioniList">
       {% for p in prenotazioni %}
       <div
-        class="grid grid-cols-1 sm:grid-cols-12 gap-4 p-5 border border-white/10 rounded-xl sm:border-0 sm:border-b sm:border-white/5 items-center">
-        <div class="col-span-1"><span class="text-gold font-bold">#{{ p[0] }}</span></div>
-        <div class="col-span-3 flex flex-col">
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-white">{{ p[1] }}</span>
-            {% if p[4] == 'Présent' %}<span class="pulse-green"></span>{% endif %}
+        class="prenotazione-item grid grid-cols-2 sm:grid-cols-12 gap-y-3 gap-x-2 p-4 sm:p-5 border border-white/10 rounded-xl sm:border-0 sm:border-b sm:border-white/5 items-center transition-all duration-300">
+
+        <div class="col-span-2 sm:col-span-4 flex items-center gap-3">
+          <span class="text-gold font-bold w-6">#{{ p[0] }}</span>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white nome-text text-sm sm:text-base">{{ p[1] }}</span>
+              {% if p[4] == 'Présent' %}<span class="pulse-green"></span>{% endif %}
+            </div>
+            <span class="text-[10px] text-gray-400">{{ p[2] }}</span>
           </div>
-          <span class="text-[10px] text-gray-400">{{ p[2] }}</span>
+        </div>
+
+        <div class="col-span-1 sm:col-span-2 text-[10px] sm:text-xs text-gray-300 telefono-text flex items-center">
+          <i class="fa-solid fa-phone text-gray-500 mr-1.5"></i> {{ p[3] }}
+        </div>
+
+        <div class="col-span-1 sm:col-span-2 id-text flex justify-end sm:justify-start">
+          {% if p[6] %}
+          <span
+            class="text-[9px] sm:text-[10px] text-white font-mono tracking-widest bg-white/10 px-1.5 py-1 sm:px-2 sm:py-1 rounded">
+            ID: <span class="font-bold">{{ p[6] }}</span>
+          </span>
+          {% else %}
+          <span class="text-[10px] text-gray-600">-</span>
+          {% endif %}
+        </div>
+
+        <div class="col-span-1 sm:col-span-2 qr-text flex items-center">
           {% if p[5] %}
-          <span class="text-[9px] text-gold font-mono tracking-widest mt-0.5">Code: {{ p[5] }}</span>{% endif %}
+          <span
+            class="text-[9px] sm:text-[10px] text-gold font-mono tracking-widest border border-gold/30 px-1.5 py-1 sm:px-2 sm:py-1 rounded bg-gold/5">
+            QR: <span class="font-bold">{{ p[5] }}</span>
+          </span>
+          {% else %}
+          <span class="text-[9px] sm:text-[10px] text-gray-500 italic">En attente</span>
+          {% endif %}
         </div>
-        <div class="col-span-3 text-xs">{{ p[3] }}</div>
-        <div class="col-span-3 text-right flex justify-end gap-2">
-          {% if p[4] != 'Confirmé' %}<a href="/admin/valider/{{ p[0] }}"
-            class="px-3 py-1 bg-gold text-black rounded text-[9px] font-bold uppercase">Valider</a>{% endif %}
-          {% if p[4] == 'Confirmé' %}<button onclick="openSuspendModal('/admin/suspendre/{{ p[0] }}')"
-            class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded text-[9px] font-bold uppercase">Suspendre</button>{%
-          endif %}
+
+        <div class="col-span-1 sm:col-span-2 text-right flex justify-end gap-1.5 sm:gap-2">
+          
+          {% if p[4] == 'In attesa' or p[4] == 'Suspendu' %}
+          <a href="/admin/valider/{{ p[0] }}"
+            class="px-2 sm:px-3 py-1.5 bg-gold text-black rounded text-[8px] sm:text-[9px] font-bold uppercase hover:bg-goldLight transition">Valider</a>
+          {% endif %}
+
+          {% if p[4] == 'Confirmé' or p[4] == 'Présent' %}
+          <button onclick="openSuspendModal('/admin/suspendre/{{ p[0] }}')"
+            class="px-2 sm:px-3 py-1.5 bg-orange-500/20 text-orange-400 rounded text-[8px] sm:text-[9px] font-bold uppercase hover:bg-orange-500/40 transition">Suspendre</button>
+          {% endif %}
+
           <button onclick="openDeleteModal('/admin/supprimer/{{ p[0] }}')"
-            class="px-3 py-1 bg-red-500/20 text-red-500 rounded text-[9px] font-bold uppercase">Supprimer</button>
+            class="px-2 sm:px-3 py-1.5 bg-red-500/20 text-red-500 rounded text-[8px] sm:text-[9px] font-bold uppercase hover:bg-red-500/40 transition">Supp</button>
         </div>
+
       </div>
       {% endfor %}
     </div>
@@ -124,41 +159,72 @@
 
   <div id="suspendModal"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 opacity-0 pointer-events-none transition-opacity">
-    <div class="bg-[#050507] p-8 rounded-2xl max-w-sm w-[90%] text-center">
+    <div class="bg-[#050507] p-8 rounded-2xl max-w-sm w-[90%] text-center border border-white/10 shadow-2xl">
       <h3 class="text-lg font-bold mb-4">Suspendre l'accès</h3>
-      <div class="flex gap-3"><button onclick="closeSuspendModal()" class="flex-1 py-3 text-gray-400">Annuler</button><a
-          id="confirmSuspendBtn" href="#" class="flex-1 py-3 bg-orange-600 rounded-lg">Confirmer</a></div>
+      <div class="flex gap-3">
+        <button onclick="closeSuspendModal()"
+          class="flex-1 py-3 text-gray-400 hover:text-white transition">Annuler</button>
+        <a id="confirmSuspendBtn" href="#" class="flex-1 py-3 bg-orange-600 rounded-lg font-bold">Confirmer</a>
+      </div>
     </div>
   </div>
 
   <div id="deleteModal"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 opacity-0 pointer-events-none transition-opacity">
-    <div class="bg-[#050507] p-8 rounded-2xl max-w-sm w-[90%] text-center">
+    <div class="bg-[#050507] p-8 rounded-2xl max-w-sm w-[90%] text-center border border-white/10 shadow-2xl">
       <h3 class="text-lg font-bold mb-4">Attention</h3>
-      <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 text-gray-400">Annuler</button><a
-          id="confirmDeleteBtn" href="#" class="flex-1 py-3 bg-red-600 rounded-lg">Confirmer</a></div>
+      <div class="flex gap-3">
+        <button onclick="closeDeleteModal()"
+          class="flex-1 py-3 text-gray-400 hover:text-white transition">Annuler</button>
+        <a id="confirmDeleteBtn" href="#" class="flex-1 py-3 bg-red-600 rounded-lg font-bold">Confirmer</a>
+      </div>
     </div>
   </div>
 
   <button onclick="document.getElementById('scanModal').classList.remove('hidden'); startScan();"
-    class="fixed bottom-6 right-6 bg-gold text-black w-14 h-14 rounded-full shadow-2xl flex items-center justify-center z-50"><i
-      class="fa-solid fa-camera text-xl"></i></button>
+    class="fixed bottom-6 right-6 bg-gold text-black w-14 h-14 rounded-full shadow-2xl flex items-center justify-center z-50 hover:scale-110 transition">
+    <i class="fa-solid fa-camera text-xl"></i>
+  </button>
 
   <div id="scanModal" class="hidden fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center p-4">
     <div id="reader" class="w-full max-w-sm aspect-square rounded-xl overflow-hidden border-2 border-gold"></div>
     <input type="text" id="manualCode" placeholder="Code manuel"
-      class="w-full mt-4 p-2 bg-white/10 rounded text-center text-white">
+      class="w-full mt-4 p-3 bg-white/10 rounded-lg text-center text-white focus:outline-none focus:border-gold border border-transparent">
     <button onclick="processCode()"
-      class="w-full mt-2 py-2 bg-gold text-black font-bold uppercase text-[10px] rounded">Valider Code</button>
-    <button onclick="closeScanModal()" class="mt-4 text-gray-500 uppercase text-[10px]">Fermer</button>
+      class="w-full mt-2 py-3 bg-gold text-black font-bold uppercase text-[10px] rounded-lg tracking-widest hover:bg-goldLight transition">Valider
+      Code</button>
+    <button onclick="closeScanModal()"
+      class="mt-4 text-gray-500 uppercase text-[10px] tracking-widest hover:text-white transition">Fermer</button>
   </div>
 
   <script src="https://unpkg.com/html5-qrcode"></script>
   <script>
+    /* Ricerca reattiva in tempo reale */
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const query = this.value.toLowerCase();
+      const items = document.querySelectorAll('.prenotazione-item');
+
+      items.forEach(item => {
+        const nome = item.querySelector('.nome-text').innerText.toLowerCase();
+        const telefono = item.querySelector('.telefono-text').innerText.toLowerCase();
+        const id = item.querySelector('.id-text').innerText.toLowerCase();
+        const qr = item.querySelector('.qr-text').innerText.toLowerCase();
+
+        if (query === '' || nome.includes(query) || telefono.includes(query) || id.includes(query) || qr.includes(query)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+
+    /* Scanner */
     const html5QrCode = new Html5Qrcode("reader");
     function processCode() { const code = document.getElementById('manualCode').value; if (code) window.location.href = "/scan_manual/" + code; }
     function startScan() { html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (decodedText) => { window.location.href = "/scan_manual/" + decodedText; }); }
     function closeScanModal() { document.getElementById('scanModal').classList.add('hidden'); html5QrCode.stop(); }
+
+    /* Modali */
     function openDeleteModal(url) { document.getElementById('confirmDeleteBtn').href = url; document.getElementById('deleteModal').classList.remove('opacity-0', 'pointer-events-none'); }
     function closeDeleteModal() { document.getElementById('deleteModal').classList.add('opacity-0', 'pointer-events-none'); }
     function openSuspendModal(url) { document.getElementById('confirmSuspendBtn').href = url; document.getElementById('suspendModal').classList.remove('opacity-0', 'pointer-events-none'); }

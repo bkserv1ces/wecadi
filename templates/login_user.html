@@ -3,105 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WECADI - Connexion Invitée</title>
+    <title>WECADI Act 3 - Connexion Invitée</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    
     <script>
+        /* Configurazione Tailwind con i colori esatti */
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+                    fontFamily: { 
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    },
                     colors: {
                         gold: '#D4AF37',
-                        goldDark: '#B8860B',
+                        goldDark: '#997A00',
                         goldLight: '#F3E5AB',
+                        bgDark: '#0a0a0a',
                         magentaCustom: '#E91E63'
                     }
                 }
             }
         }
     </script>
+    
     <style>
-        .glass-banner {
-            background: rgba(10, 10, 12, 0.75);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(212, 175, 55, 0.25);
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
-        }
+        /* Stili personalizzati per i gradienti dorati */
         .text-gold-gradient {
-            background: linear-gradient(to bottom, #FFF5CC 0%, #D4AF37 50%, #8A6623 100%);
+            background: linear-gradient(to bottom, #FFF5CC 0%, #D4AF37 40%, #8A6623 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 4px 10px rgba(212, 175, 55, 0.3));
+        }
+        .box-gold-border {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.9);
         }
     </style>
 </head>
-<body class="relative min-h-screen w-full flex flex-col items-center justify-center bg-black overflow-x-hidden font-sans">
+<body class="relative min-h-screen w-full flex flex-col items-center justify-center bg-bgDark text-white overflow-x-hidden font-sans">
 
-    <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop" 
-             alt="Sala Cinema WECADI" class="w-full h-full object-cover opacity-30">
-        <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
+    <div class="fixed inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?q=80&w=2075&auto=format&fit=crop" 
+             alt="Rideaux Rouges" 
+             class="w-full h-full object-cover opacity-30">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/90 to-[#050505]"></div>
+        
+        <div class="absolute top-0 left-1/4 w-64 h-64 bg-gold/10 rounded-full blur-[100px]"></div>
+        <div class="absolute top-0 right-1/4 w-64 h-64 bg-gold/10 rounded-full blur-[100px]"></div>
     </div>
 
-    <main class="relative z-10 w-[92%] max-w-[450px]">
-        <div class="glass-banner rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center space-y-8">
-            
-            <div class="space-y-2">
-                <h2 class="text-magentaCustom font-bold tracking-[0.2em] text-[10px] uppercase">Espace Invité</h2>
-                <h1 class="text-5xl font-bold tracking-tight text-gold-gradient">WECADI</h1>
-            </div>
-
-            <div class="w-full bg-black/40 p-6 rounded-xl border border-gold/20 text-left">
-                <h3 class="text-goldLight font-bold uppercase tracking-widest text-xs mb-6 text-center">Accéder à mon Invitation</h3>
-                
-                <div class="w-full bg-black/40 p-6 rounded-xl border border-gold/20 text-left">
-                <h3 class="text-goldLight font-bold uppercase tracking-widest text-xs mb-6 text-center">Accéder à mon Invitation</h3>
-                
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="w-full bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] uppercase tracking-widest p-3 rounded-md mb-5 text-center shadow-[0_0_10px_rgba(239,68,68,0.2)]">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                
-                <form action="/login_user" method="POST" class="space-y-5">
-
-                <form action="/login_user" method="POST" class="space-y-5">
-                    <div>
-                        <label for="email" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-1">Email de réservation</label>
-                        <input type="email" id="email" name="email" required 
-                               class="w-full bg-black/60 border border-white/10 rounded-md p-3 text-white focus:outline-none focus:border-gold transition"
-                               placeholder="Ex: jean@exemple.com">
-                    </div>
-                    <div>
-                        <label for="telefono" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-1">Numéro de Téléphone</label>
-                        <input type="tel" id="telefono" name="telefono" required 
-                               class="w-full bg-black/60 border border-white/10 rounded-md p-3 text-white focus:outline-none focus:border-gold transition"
-                               placeholder="+33 0 00 00 00 00">
-                    </div>
-
-                    <div class="pt-4 flex space-x-3">
-                        <a href="/" class="w-1/3 py-3 rounded-md text-[10px] text-center font-bold uppercase tracking-widest text-gray-400 border border-gray-600 hover:text-white transition">
-                            Accueil
-                        </a>
-                        <button type="submit" 
-                                class="w-2/3 py-3 rounded-md text-[10px] font-bold uppercase tracking-widest text-black bg-gradient-to-r from-gold to-goldLight hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition">
-                            Connexion
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <p class="text-[9px] text-gold/50 tracking-widest uppercase">Identifiez-vous pour voir votre QR Code</p>
+    <main class="relative z-10 w-[90%] max-w-[400px]">
+        
+        <div class="text-center mb-8">
+            <h2 class="text-magentaCustom font-bold tracking-[0.2em] text-[10px] sm:text-xs uppercase mb-2">
+                Espace Invité
+            </h2>
+            <h1 class="text-5xl sm:text-6xl font-serif font-black text-gold-gradient tracking-wider leading-none">
+                WECADI
+            </h1>
         </div>
+
+        <div class="bg-black/60 backdrop-blur-md box-gold-border rounded-2xl p-8 relative flex flex-col w-full">
+            
+            <h3 class="text-goldLight font-bold uppercase tracking-[0.1em] text-xs mb-8 text-center">
+                Accéder à mon invitation
+            </h3>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="w-full bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] uppercase tracking-widest p-3 rounded-md mb-6 text-center shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form action="/login_user" method="POST" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-2">Email de réservation</label>
+                    <input type="email" id="email" name="email" required 
+                           class="w-full bg-black/40 border border-white/10 rounded-lg py-3 px-4 text-white text-sm focus:outline-none focus:border-gold transition">
+                </div>
+                
+                <div>
+                    <label for="telefono" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-2">Numéro de Téléphone</label>
+                    <input type="tel" id="telefono" name="telefono" required 
+                           class="w-full bg-black/40 border border-white/10 rounded-lg py-3 px-4 text-white text-sm focus:outline-none focus:border-gold transition">
+                </div>
+
+                <div class="pt-4 flex gap-4">
+                    <a href="/" class="w-1/3 py-3 rounded-lg text-[10px] text-center font-bold uppercase tracking-widest text-gray-400 border border-gray-600 hover:text-white hover:border-white transition flex items-center justify-center">
+                        Accueil
+                    </a>
+                    <button type="submit" 
+                            class="w-2/3 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest text-black bg-gradient-to-r from-goldDark via-gold to-goldLight hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition">
+                        Connexion
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <p class="text-[9px] text-gold/40 tracking-[0.2em] uppercase text-center mt-6">
+            Identifiez-vous pour voir votre QR Code
+        </p>
     </main>
 
-    <footer class="absolute bottom-4 z-20 text-[9px] text-gray-600 tracking-widest uppercase">
-        © WECADI 2026 • Ferrara, Italia
+    <footer class="absolute bottom-4 z-20 text-[9px] text-gray-600 tracking-[0.2em] uppercase text-center w-full">
+        © WECADI 2026 • Padova, Italia
     </footer>
 
 </body>

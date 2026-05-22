@@ -1,5 +1,8 @@
 import os
 import secrets
+import string
+import random
+from datetime import timedelta
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from supabase import create_client, Client
 
@@ -11,6 +14,9 @@ supabase: Client = create_client(url, key)
 app = Flask(__name__)
 app.secret_key = 'wecadi_prestige_key_2026'
 
+# Imposta la durata della sessione a 90 giorni per ricordare l'utente
+app.permanent_session_lifetime = timedelta(days=90)
+
 # Password fissa per l'amministratore
 ADMIN_PASSWORD = 'wecadi2026'
 
@@ -18,17 +24,30 @@ ADMIN_PASSWORD = 'wecadi2026'
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    success = False 
     if request.method == 'POST':
-        # Inserimento di una nuova prenotazione nel database
-        supabase.table("prenotazioni").insert({
+        # Generazione di un codice alfanumerico univoco di 4 caratteri
+        caratteri = string.ascii_uppercase + string.digits
+        nuovo_codice_cliente = ''.join(random.choices(caratteri, k=4))
+
+        # Inserimento della prenotazione con il nuovo codice cliente
+        response = supabase.table("prenotazioni").insert({
             "nome": request.form.get('nome'),
             "email": request.form.get('email'),
             "telefono": request.form.get('telefono'),
-            "stato": "In attesa"
+            "stato": "In attesa",
+            "codice_cliente": nuovo_codice_cliente
         }).execute()
-        success = True 
-    return render_template('index.html', success=success)
+        
+        # Login automatico immediato dopo l'inserimento
+        if response.data:
+            session.permanent = True
+            session['user_id'] = response.data[0]['id']
+            # Reindirizza l'utente direttamente alla sua dashboard
+            return redirect(url_for('user_dashboard'))
+            
+    # Controlla se l'utente è già loggato per passarlo al template HTML
+    utente_connesso = 'user_id' in session
+    return render_template('index.html', is_logged_in=utente_connesso)
 
 @app.route('/login', methods=['GET'])
 def login_page():
@@ -49,6 +68,7 @@ def login_user():
             .execute()
         
         if response.data:
+            session.permanent = True
             session['user_id'] = response.data[0]['id']
             return redirect(url_for('user_dashboard'))
         else:
@@ -91,20 +111,32 @@ def admin_dashboard():
     
     data = supabase.table("prenotazioni").select("*").order("id", desc=True).execute().data
     
-    # Calcolo delle statistiche lato applicazione
     stats = {
         'total': len(data),
-        'confirmes': len([p for p in data if p['stato'] == 'Confirmé']),
+        'confirmes': len([p for p in data if p['stato'] in ['Confirmé', 'Présent']]),
         'en_attente': len([p for p in data if p['stato'] == 'In attesa']),
         'presents': len([p for p in data if p['stato'] == 'Présent'])
     }
     
     query = request.args.get('q', '').lower()
     if query:
-        data = [p for p in data if query in str(p['nome']).lower() or query in str(p['email']).lower() or query in str(p['code_qr'] or '').lower()]
+        # Ricerca limitata solo a: Nome, Telefono, Codice Cliente e Code QR
+        data = [p for p in data if 
+                query in str(p.get('nome', '')).lower() or 
+                query in str(p.get('telefono', '')).lower() or 
+                query in str(p.get('codice_cliente', '')).lower() or 
+                query in str(p.get('code_qr', '')).lower()]
     
-    # Conversione dei dizionari Supabase in liste per il template
-    prenotazioni = [[p['id'], p['nome'], p['email'], p['telefono'], p['stato'], p.get('code_qr')] for p in data]
+    # Aggiunta del codice_cliente (indice 6) nella lista inviata al template HTML
+    prenotazioni = [[
+        p['id'], 
+        p['nome'], 
+        p['email'], 
+        p['telefono'], 
+        p['stato'], 
+        p.get('code_qr'),
+        p.get('codice_cliente') # Nuovo campo aggiunto all'indice 6
+    ] for p in data]
     
     return render_template('admin_dashboard.html', prenotazioni=prenotazioni, stats=stats, search_query=query)
 
@@ -126,17 +158,29 @@ def scan_manual(code):
     user = supabase.table("prenotazioni").select("*").eq("code_qr", code).execute().data
     
     if user:
-        if user[0]['stato'] == 'Confirmé':
+        # Controllo dello stato per gestire il flusso dello scanner
+        stato_attuale = user[0]['stato']
+        
+        if stato_attuale == 'Confirmé':
+            # Il biglietto è valido: aggiorna lo stato a Presente
             supabase.table("prenotazioni").update({"stato": "Présent"}).eq("code_qr", code).execute()
-            return render_template('scan_result.html', status='success', message=f"Bienvenue {user[0]['nome']} !")
-        return render_template('scan_result.html', status='error', message="Billet non confirmé.")
-    return render_template('scan_result.html', status='error', message="Code invalide.")
+            return render_template('scan_result.html', status='success', message=f"Accès autorisé ! Bienvenue {user[0]['nome']}.")
+            
+        elif stato_attuale == 'Présent':
+            # Il biglietto è già stato scansionato in precedenza
+            return render_template('scan_result.html', status='error', message=f"Attention : Le billet de {user[0]['nome']} a DÉJÀ ÉTÉ SCANNÉ.")
+            
+        else:
+            # Se è in attesa o sospeso
+            return render_template('scan_result.html', status='error', message="Billet non valide ou suspendu.")
+            
+    return render_template('scan_result.html', status='error', message="Code invalide ou introuvable.")
 
 @app.route('/admin/suspendre/<int:id>')
 def admin_suspendre(id):
     if not session.get('admin_logged_in'): return redirect(url_for('admin_page'))
     # Sospensione dell'utente (nessun file da eliminare)
-    supabase.table("prenotazioni").update({"stato": "Suspendu"}).eq("id", id).execute()
+    supabase.table("prenotazioni").update({"stato": "Suspendu", "code_qr": None}).eq("id", id).execute()
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/supprimer/<int:id>')
