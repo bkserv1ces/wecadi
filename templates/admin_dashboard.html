@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
   <title>WECADI - Panneau de Contrôle</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -137,7 +139,7 @@
         </div>
 
         <div class="col-span-1 sm:col-span-2 text-right flex justify-end gap-1.5 sm:gap-2">
-          
+
           {% if p[4] == 'In attesa' or p[4] == 'Suspendu' %}
           <a href="/admin/valider/{{ p[0] }}"
             class="px-2 sm:px-3 py-1.5 bg-gold text-black rounded text-[8px] sm:text-[9px] font-bold uppercase hover:bg-goldLight transition">Valider</a>

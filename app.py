@@ -25,6 +25,17 @@ ADMIN_PASSWORD = 'wecadi2026'
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
+        email = request.form.get('email')
+        telefono = request.form.get('telefono')
+
+        # Controllo se esiste già una prenotazione con questa email o questo telefono
+        esistente = supabase.table("prenotazioni").select("id").or_(f"email.eq.{email},telefono.eq.{telefono}").execute()
+
+        if esistente.data:
+            # Se esiste già, inviamo un messaggio di errore alla pagina
+            flash('Un billet a déjà été réservé avec cet email ou ce numéro.', 'error')
+            return redirect(url_for('home'))
+
         # Generazione di un codice alfanumerico univoco di 4 caratteri
         caratteri = string.ascii_uppercase + string.digits
         nuovo_codice_cliente = ''.join(random.choices(caratteri, k=4))
@@ -32,8 +43,8 @@ def home():
         # Inserimento della prenotazione con il nuovo codice cliente
         response = supabase.table("prenotazioni").insert({
             "nome": request.form.get('nome'),
-            "email": request.form.get('email'),
-            "telefono": request.form.get('telefono'),
+            "email": email,
+            "telefono": telefono,
             "stato": "In attesa",
             "codice_cliente": nuovo_codice_cliente
         }).execute()
@@ -42,7 +53,6 @@ def home():
         if response.data:
             session.permanent = True
             session['user_id'] = response.data[0]['id']
-            # Reindirizza l'utente direttamente alla sua dashboard
             return redirect(url_for('user_dashboard'))
             
     # Controlla se l'utente è già loggato per passarlo al template HTML

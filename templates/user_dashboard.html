@@ -4,34 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WECADI Act 3 - Mon Invitation</title>
+    <title>WECADI Act 2 - Mon Invitation</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script>
         /* Configurazione Tailwind con i colori esatti */
         tailwind.config = {
             theme: {
-                extend: { 
-                    fontFamily: { 
+                extend: {
+                    fontFamily: {
                         sans: ['Montserrat', 'sans-serif'],
                         serif: ['Playfair Display', 'serif'],
                         script: ['Great Vibes', 'cursive']
-                    }, 
-                    colors: { 
-                        gold: '#D4AF37', 
+                    },
+                    colors: {
+                        gold: '#D4AF37',
                         goldDark: '#997A00',
-                        goldLight: '#F3E5AB', 
+                        goldLight: '#F3E5AB',
                         bgDark: '#0a0a0a',
-                        magentaCustom: '#E91E63' 
-                    } 
+                        magentaCustom: '#E91E63'
+                    }
                 }
             }
         }
     </script>
-    
+
     <style>
         /* Stili per gradienti e box */
         .text-gold-gradient {
@@ -40,73 +44,98 @@
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0px 4px 10px rgba(212, 175, 55, 0.3));
         }
+
         .box-gold-border {
             border: 2px solid #D4AF37;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.15), inset 0 0 15px rgba(212, 175, 55, 0.05);
         }
+
         .pulse-green {
-            height: 8px; width: 8px;
+            height: 8px;
+            width: 8px;
             background-color: #22c55e;
             border-radius: 50%;
             display: inline-block;
             box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
             animation: pulse 1.5s infinite;
         }
+
         @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
         }
     </style>
 </head>
 
-<body class="relative min-h-screen w-full flex flex-col items-center justify-start bg-bgDark text-white overflow-x-hidden font-sans pb-10">
+<body
+    class="relative min-h-screen w-full flex flex-col items-center justify-start bg-bgDark text-white overflow-x-hidden font-sans pb-10">
 
     <div class="fixed inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?q=80&w=2075&auto=format&fit=crop" 
-             alt="Rideaux Rouges" 
-             class="w-full h-full object-cover opacity-40">
+        <img src="https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?q=80&w=2075&auto=format&fit=crop"
+            alt="Rideaux Rouges" class="w-full h-full object-cover opacity-40">
         <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/90 to-[#050505]"></div>
-        
+
         <div class="absolute top-0 left-1/4 w-64 h-64 bg-gold/10 rounded-full blur-[100px]"></div>
         <div class="absolute top-0 right-1/4 w-64 h-64 bg-gold/10 rounded-full blur-[100px]"></div>
     </div>
 
     <header class="absolute top-4 left-4 sm:top-8 sm:left-8 z-30">
-        <a href="/" class="flex items-center gap-2 px-5 py-2 rounded-full border border-gray-600 text-[10px] sm:text-xs font-bold text-gray-400 tracking-[0.1em] uppercase hover:bg-white/5 hover:text-white transition duration-300 backdrop-blur-sm">
+        <a href="/"
+            class="flex items-center gap-2 px-5 py-2 rounded-full border border-gray-600 text-[10px] sm:text-xs font-bold text-gray-400 tracking-[0.1em] uppercase hover:bg-white/5 hover:text-white transition duration-300 backdrop-blur-sm">
             <i class="fa-solid fa-house"></i> Accueil
         </a>
     </header>
 
     <header class="absolute top-4 right-4 sm:top-8 sm:right-8 z-30">
-        <a href="/logout" class="flex items-center gap-2 px-5 py-2 rounded-full border border-gray-600 text-[10px] sm:text-xs font-bold text-gray-400 tracking-[0.1em] uppercase hover:bg-white/5 hover:text-white transition duration-300 backdrop-blur-sm">
+        <a href="/logout"
+            class="flex items-center gap-2 px-5 py-2 rounded-full border border-gray-600 text-[10px] sm:text-xs font-bold text-gray-400 tracking-[0.1em] uppercase hover:bg-white/5 hover:text-white transition duration-300 backdrop-blur-sm">
             <i class="fa-solid fa-power-off"></i> Déconnexion
         </a>
     </header>
 
     <main class="relative z-10 w-[95%] max-w-[900px] mt-16 sm:mt-12 flex flex-col items-center">
-        
+
         <div class="text-center mb-8">
-            <h1 class="text-6xl sm:text-8xl md:text-9xl font-serif font-black text-gold-gradient tracking-wider leading-none">
+            <h1
+                class="text-6xl sm:text-8xl md:text-9xl font-serif font-black text-gold-gradient tracking-wider leading-none">
                 WECADI
             </h1>
-            <h2 class="text-5xl sm:text-7xl font-script text-white -mt-4 sm:-mt-8 mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                act 3
+            <h2
+                class="text-5xl sm:text-7xl font-script text-white -mt-4 sm:-mt-8 mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                act 2
             </h2>
-            
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-200 bg-black/40 border border-gold/30 rounded-2xl sm:rounded-full px-6 py-3 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)] w-fit mx-auto">
-                <div class="flex items-center gap-2"><i class="fa-regular fa-calendar text-gold"></i><span class="font-semibold tracking-wider">20/06/2026</span></div>
+
+            <div
+                class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-200 bg-black/40 border border-gold/30 rounded-2xl sm:rounded-full px-6 py-3 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)] w-fit mx-auto">
+                <div class="flex items-center gap-2"><i class="fa-regular fa-calendar text-gold"></i><span
+                        class="font-semibold tracking-wider">20/06/2026</span></div>
                 <div class="hidden sm:block w-[1px] h-4 bg-gold/30"></div>
-                <div class="flex items-center gap-2"><i class="fa-regular fa-clock text-gold"></i><span class="font-semibold tracking-wider">20:00</span></div>
+                <div class="flex items-center gap-2"><i class="fa-regular fa-clock text-gold"></i><span
+                        class="font-semibold tracking-wider">20:00</span></div>
                 <div class="hidden sm:block w-[1px] h-4 bg-gold/30"></div>
-                <div class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-gold"></i><span class="font-semibold tracking-wider">Corso Tre Venezie 20, Padova</span></div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-gold"></i><span
+                        class="font-semibold tracking-wider">Corso Tre Venezie 20, Padova</span></div>
             </div>
         </div>
 
-        <div class="w-full max-w-[500px] bg-black/70 backdrop-blur-md box-gold-border rounded-2xl p-6 sm:p-8 relative flex flex-col mt-4">
-            
+        <div
+            class="w-full max-w-[500px] bg-black/70 backdrop-blur-md box-gold-border rounded-2xl p-6 sm:p-8 relative flex flex-col mt-4">
+
             <div class="text-center mb-6">
-                <h3 class="text-gold/80 font-medium tracking-[0.2em] uppercase text-[10px] sm:text-xs mb-1">Votre Espace Privé</h3>
+                <h3 class="text-gold/80 font-medium tracking-[0.2em] uppercase text-[10px] sm:text-xs mb-1">Votre Espace
+                    Privé</h3>
                 <h4 class="text-2xl font-black text-white tracking-widest uppercase">Mon Invitation</h4>
             </div>
 
@@ -120,7 +149,8 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-gray-400 uppercase tracking-widest text-[10px] block mb-1">Billet Numéro</span>
+                        <span class="text-gray-400 uppercase tracking-widest text-[10px] block mb-1">Billet
+                            Numéro</span>
                         <span class="text-gold font-mono font-bold tracking-widest">{{ user[6] }}</span>
                     </div>
                 </div>
@@ -128,73 +158,116 @@
                 <div>
                     <span class="text-gray-400 uppercase tracking-widest text-[10px] block mb-2">Statut</span>
                     {% if user[4] == 'In attesa' %}
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider bg-magentaCustom/10 text-magentaCustom border border-magentaCustom/50">
-                            <i class="fa-regular fa-clock"></i> En attente de paiement
-                        </span>
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider bg-magentaCustom/10 text-magentaCustom border border-magentaCustom/50">
+                        <i class="fa-regular fa-clock"></i> En attente de paiement
+                    </span>
                     {% elif user[4] == 'Confirmé' %}
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider bg-green-500/10 text-green-500 border border-green-500/50">
-                            <i class="fa-solid fa-check-double"></i> Validé
-                        </span>
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider bg-green-500/10 text-green-500 border border-green-500/50">
+                        <i class="fa-solid fa-check-double"></i> Validé
+                    </span>
+                    {% elif user[4] == 'Présent' %}
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-400 border border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.3)]">
+                        <i class="fa-solid fa-door-open"></i> En Salle
+                    </span>
                     {% elif user[4] == 'Suspendu' %}
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider bg-orange-500/10 text-orange-500 border border-orange-500/50">
-                            <i class="fa-solid fa-ban"></i> Accès Suspendu
-                        </span>
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider bg-orange-500/10 text-orange-500 border border-orange-500/50">
+                        <i class="fa-solid fa-ban"></i> Accès Suspendu
+                    </span>
                     {% endif %}
                 </div>
             </div>
 
             <div class="w-full flex flex-col items-center">
-                
+
                 {% if user[4] == 'In attesa' %}
                 <div class="w-full bg-gradient-to-b from-gold/10 to-transparent p-5 rounded-xl border border-gold/30">
                     <h5 class="text-gold font-bold uppercase tracking-widest text-xs mb-3 text-center">
                         <i class="fa-solid fa-credit-card mr-2"></i> Finaliser la réservation
                     </h5>
                     <p class="text-gray-300 text-[11px] text-center mb-5 font-light leading-relaxed">
-                        Pour obtenir votre QR Code, veuillez effectuer le paiement de <strong class="text-white">30€</strong> en utilisant l'une des méthodes ci-dessous.
+                        Pour obtenir votre QR Code, veuillez effectuer le paiement de <strong
+                            class="text-white">30€</strong> en utilisant l'une des méthodes ci-dessous.
                     </p>
 
                     <div class="bg-gold/20 p-3 rounded border border-gold border-dashed text-center mb-4 mt-2">
-                        <p class="text-[10px] text-goldLight uppercase tracking-widest mb-1">Motif obligatoire (Causale)</p>
+                        <p class="text-[10px] text-goldLight uppercase tracking-widest mb-1">Motif obligatoire (Causale)
+                        </p>
                         <p class="text-sm font-bold text-gold tracking-widest select-all">{{ user[6] }}</p>
                     </div>
 
                     <div class="mb-4 bg-black/60 p-4 rounded border border-white/5">
-                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2 border-b border-white/10 pb-1">Virement Bancaire</p>
+                        <p
+                            class="text-[10px] text-gray-400 uppercase tracking-widest mb-2 border-b border-white/10 pb-1">
+                            Virement Bancaire</p>
                         <div class="space-y-1.5 text-xs font-mono">
-                            <div class="flex justify-between"><span class="text-gray-500 font-sans">IBAN:</span> <span class="text-white select-all">IT00 0000 0000 0000 0000 0000 000</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500 font-sans">SWIFT:</span> <span class="text-white select-all">BANKITXX</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500 font-sans">Nom:</span> <span class="text-white">WECADI Eventi</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500 font-sans">IBAN:</span> <span
+                                    class="text-white select-all">IT35 A010 3012 1570 0000 2390 265</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500 font-sans">Nom:</span> <span
+                                    class="text-white">Ndjiki Lydie Ingrid</span></div>
                         </div>
                     </div>
 
                     <div class="mb-4 bg-black/60 p-4 rounded border border-white/5">
-                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2 border-b border-white/10 pb-1">PayPal</p>
+                        <p
+                            class="text-[10px] text-gray-400 uppercase tracking-widest mb-2 border-b border-white/10 pb-1">
+                            PayPal</p>
                         <div class="space-y-1.5 text-xs font-mono">
-                            <div class="flex justify-between"><span class="text-gray-500 font-sans">Email:</span> <span class="text-white select-all">paiement@wecadi.com</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500 font-sans">Email:</span> <span
+                                    class="text-white select-all">sergesnguedia@gmail.com</span></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 bg-black/60 p-4 rounded border border-white/5">
+                        <p
+                            class="text-[10px] text-gray-400 uppercase tracking-widest mb-2 border-b border-white/10 pb-1">
+                            Espèces (Cash)</p>
+                        <div class="space-y-2 text-xs font-mono">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 font-sans">Contact:</span>
+                                <span class="text-white">Sergio Nguedia</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 font-sans">WhatsApp:</span>
+                                <a href="https://wa.me/393896123577?text=Bonjour%20Sergio%2C%20je%20souhaite%20payer%20ma%20r%C3%A9servation%20WECADI%20(ID%3A%20{{ user[6] }})%20en%20esp%C3%A8ces."
+                                    target="_blank"
+                                    class="text-[#25D366] hover:text-green-400 font-bold flex items-center gap-1.5 transition duration-300">
+                                    <i class="fa-brands fa-whatsapp text-sm"></i> +39 389 612 3577
+                                </a>
+                            </div>
                         </div>
                     </div>
 
                 </div>
 
                 {% elif user[4] == 'Confirmé' %}
-                <div class="bg-white p-3 rounded-xl shadow-[0_0_30px_rgba(212,175,55,0.4)] transform hover:scale-105 transition duration-500 mb-4 mt-2">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ user[5] }}" alt="QR Code" class="rounded-xl border-4 border-gold">
+                <div
+                    class="bg-white p-3 rounded-xl shadow-[0_0_30px_rgba(212,175,55,0.4)] transform hover:scale-105 transition duration-500 mb-4 mt-2">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ user[5] }}" alt="QR Code"
+                        class="rounded-xl border-4 border-gold">
                 </div>
                 <div class="space-y-1 text-center">
                     <p class="text-[10px] text-gold uppercase tracking-widest font-bold">Billet valide</p>
-                    <p class="text-[9px] text-gray-400 uppercase tracking-widest">Présentez ce code à l'entrée de la salle</p>
-                    <p class="text-[10px] text-white font-mono tracking-widest mt-2 bg-white/10 px-3 py-1 rounded inline-block">{{ user[5] }}</p>
+                    <p class="text-[9px] text-gray-400 uppercase tracking-widest">Présentez ce code à l'entrée de la
+                        salle</p>
+                    <p
+                        class="text-[10px] text-white font-mono tracking-widest mt-2 bg-white/10 px-3 py-1 rounded inline-block">
+                        {{ user[5] }}</p>
                 </div>
 
                 {% elif user[4] == 'Suspendu' %}
-                <div class="w-48 h-48 bg-orange-500/5 rounded-xl border border-orange-500/20 flex flex-col items-center justify-center p-6 mb-4 mt-2">
+                <div
+                    class="w-48 h-48 bg-orange-500/5 rounded-xl border border-orange-500/20 flex flex-col items-center justify-center p-6 mb-4 mt-2">
                     <i class="fa-solid fa-qrcode text-5xl text-orange-500/30 mb-4"></i>
                     <p class="text-[9px] text-orange-500/60 uppercase text-center leading-relaxed">QR Code révoqué</p>
                 </div>
-                <p class="text-[9px] text-gray-500 uppercase tracking-widest text-center">Veuillez contacter l'organisation</p>
+                <p class="text-[9px] text-gray-500 uppercase tracking-widest text-center">Veuillez contacter
+                    l'organisation</p>
                 {% endif %}
-                
+
             </div>
         </div>
     </main>
@@ -205,4 +278,5 @@
     </footer>
 
 </body>
+
 </html>

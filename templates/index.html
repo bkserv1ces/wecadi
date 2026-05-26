@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WECADI Act 3 - Réservation</title>
-
+    <title>WECADI Act 2 - Réservation</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link
@@ -103,15 +104,14 @@
     </header>
 
     <div class="absolute top-4 left-4 sm:top-8 sm:left-8 z-30 flex items-center gap-3 group cursor-pointer" onclick="">
-        <span class="hidden sm:block text-[8px] sm:text-[9px] text-white/50 uppercase tracking-widest transition duration-300 group-hover:text-white group-active:text-white">
+        <span
+            class="hidden sm:block text-[8px] sm:text-[9px] text-white/50 uppercase tracking-widest transition duration-300 group-hover:text-white group-active:text-white">
             Partenaire Officiel
         </span>
-
         <img src="/static/images/00.png" alt="Sponsor Ufficiale"
             class="h-9 sm:h-12 object-contain transition-all duration-500 ease-in-out group-hover:![filter:none] group-active:![filter:none]"
             style="filter: brightness(0) saturate(100%) invert(76%) sepia(32%) saturate(735%) hue-rotate(2deg) brightness(93%) contrast(88%);">
     </div>
-    
 
     <main class="relative z-10 w-[95%] max-w-[900px] mt-16 sm:mt-12 flex flex-col items-center">
 
@@ -122,7 +122,7 @@
             </h1>
             <h2
                 class="text-5xl sm:text-7xl font-script text-white -mt-4 sm:-mt-8 mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                act 3
+                act 2
             </h2>
 
             <div
@@ -143,7 +143,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-center gap-4 mt-2">
+            <div class="flex items-center justify-center gap-4 mt-2 mb-8">
                 <div class="w-12 sm:w-20 h-[1px] bg-gradient-to-r from-transparent to-gold/60"></div>
                 <h3 id="dynamic-title"
                     class="text-gold/80 font-medium tracking-[0.2em] uppercase text-[10px] sm:text-xs transition-all duration-300">
@@ -151,6 +151,21 @@
                 </h3>
                 <div class="w-12 sm:w-20 h-[1px] bg-gradient-to-l from-transparent to-gold/60"></div>
             </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="w-full max-w-md mx-auto mb-8 animate-pulse">
+                {% for category, message in messages %}
+                <div
+                    class="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] sm:text-xs uppercase tracking-widest p-4 rounded-xl text-center shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                    <i class="fa-solid fa-triangle-exclamation mr-2 text-lg mb-1 block"></i>
+                    {{ message }}
+                    <br><a href="/login" class="text-white underline mt-2 inline-block font-bold">Se Connecter</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
         </div>
 
         <div id="info-block"
@@ -166,39 +181,46 @@
                     LIGNE :</h4>
                 <div
                     class="text-5xl sm:text-6xl font-black text-gold mb-4 drop-shadow-[0_2px_10px_rgba(212,175,55,0.5)]">
-                    30€</div>
+                    30€
+                </div>
                 <div class="w-full bg-gradient-to-r from-transparent via-gold to-transparent h-[1px] mb-6 relative">
                     <div
                         class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-bgDark px-3 text-gold font-bold text-xs tracking-widest">
-                        QUI DONNE :</div>
+                        QUI DONNE :
+                    </div>
                 </div>
                 <ul
                     class="w-full space-y-4 text-left text-sm sm:text-base font-semibold tracking-wide text-gray-200 mb-8">
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-door-open"></i></div>Accès à la salle
+                            <i class="fa-solid fa-door-open"></i>
+                        </div>Accès à la salle
                     </li>
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-martini-glass-citrus"></i></div><span class="leading-tight">45 min
+                            <i class="fa-solid fa-martini-glass-citrus"></i>
+                        </div><span class="leading-tight">45 min
                             d'apéro de bienvenue <span class="text-gold block text-xs">À VOLONTÉ</span></span>
                     </li>
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-chair"></i></div>Place assise
+                            <i class="fa-solid fa-chair"></i>
+                        </div>Place assise
                     </li>
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-clapperboard"></i></div>Projection du film
+                            <i class="fa-solid fa-clapperboard"></i>
+                        </div>Projection du film
                     </li>
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-music"></i></div>Soirée dansante
+                            <i class="fa-solid fa-music"></i>
+                        </div>Soirée dansante
                     </li>
                 </ul>
                 <button type="button" onclick="mostraModulo()"
@@ -243,15 +265,20 @@
         <div id="form-block" class="w-full max-w-md mx-auto fade-transition opacity-0 hidden transform translate-y-4">
             <div class="bg-black/80 backdrop-blur-md box-gold-border rounded-2xl p-6 sm:p-8 text-left">
                 <form id="prenotazioneForm" action="/" method="POST" class="space-y-5" onsubmit="mostraConferma(event)">
+
                     <div>
                         <label for="nome"
                             class="block text-xs text-gray-300 uppercase tracking-widest mb-2 font-semibold">Nom
                             Complet</label>
                         <div class="relative">
-                            <i
-                                class="fa-solid fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50"></i>
-                            <input type="text" id="nome" name="nome" required
+                            <i id="nome-icon"
+                                class="fa-solid fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50 transition-colors"></i>
+                            <input type="text" id="nome" name="nome"
                                 class="w-full bg-black/50 border border-gold/30 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition">
+                        </div>
+                        <div id="nome-error"
+                            class="hidden text-red-500 text-[10px] mt-1.5 flex items-center gap-1.5 font-semibold tracking-wider">
+                            <i class="fa-solid fa-circle-exclamation"></i> 3 caractères minimum.
                         </div>
                     </div>
 
@@ -259,21 +286,30 @@
                         <label for="email"
                             class="block text-xs text-gray-300 uppercase tracking-widest mb-2 font-semibold">Email</label>
                         <div class="relative">
-                            <i
-                                class="fa-solid fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50"></i>
-                            <input type="email" id="email" name="email" required
+                            <i id="email-icon"
+                                class="fa-solid fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50 transition-colors"></i>
+                            <input type="text" id="email" name="email"
                                 class="w-full bg-black/50 border border-gold/30 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition">
+                        </div>
+                        <div id="email-error"
+                            class="hidden text-red-500 text-[10px] mt-1.5 flex items-center gap-1.5 font-semibold tracking-wider">
+                            <i class="fa-solid fa-circle-exclamation"></i> Veuillez entrer une adresse email valide.
                         </div>
                     </div>
 
                     <div>
                         <label for="telefono"
-                            class="block text-xs text-gray-300 uppercase tracking-widest mb-2 font-semibold">Téléphone</label>
+                            class="block text-xs text-gray-300 uppercase tracking-widest mb-2 font-semibold">Téléphone
+                            (sans indicatif pays)</label>
                         <div class="relative">
-                            <i
-                                class="fa-solid fa-phone absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50"></i>
-                            <input type="tel" id="telefono" name="telefono" required
+                            <i id="telefono-icon"
+                                class="fa-solid fa-phone absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50 transition-colors"></i>
+                            <input type="text" id="telefono" name="telefono" placeholder="Ex: 06 12 34 56 78"
                                 class="w-full bg-black/50 border border-gold/30 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition">
+                        </div>
+                        <div id="telefono-error"
+                            class="hidden text-red-500 text-[10px] mt-1.5 flex items-center gap-1.5 font-semibold tracking-wider">
+                            <i class="fa-solid fa-circle-exclamation"></i> Doit contenir exactement 10 chiffres.
                         </div>
                     </div>
 
@@ -299,13 +335,11 @@
                     <i class="fa-solid fa-shield-halved text-4xl text-gold"></i>
                 </div>
                 <h3 class="text-2xl text-goldLight font-bold uppercase tracking-widest mb-4">Vérification</h3>
-
                 <p class="text-gray-300 text-sm font-light leading-relaxed mb-8">
                     Vous êtes sur le point de valider votre réservation. Assurez-vous d'avoir accès à votre
                     <strong>Email</strong> et votre <strong>Numéro de téléphone</strong> : ce sont vos futurs
                     identifiants de connexion.
                 </p>
-
                 <div class="flex flex-col sm:flex-row gap-4">
                     <button type="button" onclick="annullaTutto()"
                         class="w-full sm:w-1/3 border border-gold/50 text-gold font-bold uppercase tracking-widest text-xs py-3 rounded-lg hover:bg-gold/10 transition duration-300">
@@ -330,18 +364,47 @@
     </div>
 
     <div class="relative z-20 w-full max-w-5xl mx-auto mt-20 flex flex-col items-center pt-4 mb-8">
-
         <div class="h-[1px] w-64 sm:w-96 bg-gradient-to-r from-transparent via-gold/50 to-transparent mx-auto mb-6">
         </div>
-
         <h4 class="text-[9px] sm:text-[10px] text-gold/50 uppercase tracking-[0.2em] mb-8 text-center">
-            Nos Partenaires
+            Nos Partenaires Officiels
         </h4>
-
         <div class="w-full relative overflow-hidden">
-            
+
 
             <div class="animate-scroll gap-12 sm:gap-16 px-6 items-center">
+                <img src="{{ url_for('static', filename='images/1.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/2.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/3.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/4.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/5.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/6.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/7.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/8.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/9.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/10.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/11.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/12.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/13.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/14.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/15.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+                <img src="{{ url_for('static', filename='images/16.png') }}"
+                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
 
                 <img src="{{ url_for('static', filename='images/1.png') }}"
                     class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
@@ -369,34 +432,12 @@
                     class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
                 <img src="{{ url_for('static', filename='images/13.png') }}"
                     class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-
-                <img src="{{ url_for('static', filename='images/1.png') }}"
+                <img src="{{ url_for('static', filename='images/14.png') }}"
                     class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/2.png') }}"
+                <img src="{{ url_for('static', filename='images/15.png') }}"
                     class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/3.png') }}"
+                <img src="{{ url_for('static', filename='images/16.png') }}"
                     class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/4.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/5.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/6.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/7.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/8.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/9.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/10.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/11.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/12.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-                <img src="{{ url_for('static', filename='images/13.png') }}"
-                    class="h-10 sm:h-16 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
-
             </div>
         </div>
     </div>
@@ -413,12 +454,78 @@
         const titleElement = document.getElementById('dynamic-title');
         const loaderBlock = document.getElementById('loader-block');
 
-        /* Funzione 1: Dal blocco Info al blocco Form (Cambio titolo) */
+        /* Funzione di validazione del modulo (Controllo errori) */
+        function validaModulo() {
+            let isValid = true;
+
+            // 1. Validazione Nome
+            const nomeInput = document.getElementById('nome');
+            const nomeError = document.getElementById('nome-error');
+            const nomeIcon = document.getElementById('nome-icon');
+            if (nomeInput.value.trim().length < 3) {
+                nomeError.classList.remove('hidden');
+                nomeInput.classList.replace('border-gold/30', 'border-red-500');
+                nomeInput.classList.replace('focus:border-gold', 'focus:border-red-500');
+                nomeInput.classList.replace('focus:ring-gold', 'focus:ring-red-500');
+                nomeIcon.classList.replace('text-gold/50', 'text-red-500');
+                isValid = false;
+            } else {
+                nomeError.classList.add('hidden');
+                nomeInput.classList.replace('border-red-500', 'border-gold/30');
+                nomeInput.classList.replace('focus:border-red-500', 'focus:border-gold');
+                nomeInput.classList.replace('focus:ring-red-500', 'focus:ring-gold');
+                nomeIcon.classList.replace('text-red-500', 'text-gold/50');
+            }
+
+            // 2. Validazione Email
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            const emailIcon = document.getElementById('email-icon');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailInput.value.trim())) {
+                emailError.classList.remove('hidden');
+                emailInput.classList.replace('border-gold/30', 'border-red-500');
+                emailInput.classList.replace('focus:border-gold', 'focus:border-red-500');
+                emailInput.classList.replace('focus:ring-gold', 'focus:ring-red-500');
+                emailIcon.classList.replace('text-gold/50', 'text-red-500');
+                isValid = false;
+            } else {
+                emailError.classList.add('hidden');
+                emailInput.classList.replace('border-red-500', 'border-gold/30');
+                emailInput.classList.replace('focus:border-red-500', 'focus:border-gold');
+                emailInput.classList.replace('focus:ring-red-500', 'focus:ring-gold');
+                emailIcon.classList.replace('text-red-500', 'text-gold/50');
+            }
+
+            // 3. Validazione Telefono
+            const telInput = document.getElementById('telefono');
+            const telError = document.getElementById('telefono-error');
+            const telIcon = document.getElementById('telefono-icon');
+            const telValue = telInput.value.replace(/\s+/g, '');
+            const telRegex = /^\d{10}$/;
+            if (!telRegex.test(telValue)) {
+                telError.classList.remove('hidden');
+                telInput.classList.replace('border-gold/30', 'border-red-500');
+                telInput.classList.replace('focus:border-gold', 'focus:border-red-500');
+                telInput.classList.replace('focus:ring-gold', 'focus:ring-red-500');
+                telIcon.classList.replace('text-gold/50', 'text-red-500');
+                isValid = false;
+            } else {
+                telError.classList.add('hidden');
+                telInput.classList.replace('border-red-500', 'border-gold/30');
+                telInput.classList.replace('focus:border-red-500', 'focus:border-gold');
+                telInput.classList.replace('focus:ring-red-500', 'focus:ring-gold');
+                telIcon.classList.replace('text-red-500', 'text-gold/50');
+            }
+
+            return isValid;
+        }
+
+        /* Navigazione */
         function mostraModulo() {
             infoBlock.classList.remove('opacity-100', 'translate-y-0');
             infoBlock.classList.add('opacity-0', '-translate-y-4');
 
-            // Cambia il titolo
             titleElement.classList.add('opacity-0');
             setTimeout(() => {
                 titleElement.innerText = "Réservation";
@@ -434,10 +541,12 @@
             }, 500);
         }
 
-        /* Funzione 2: Dal Form alla schermata di Conferma */
         function mostraConferma(event) {
-            // Impedisce l'invio reale del modulo per ora
             event.preventDefault();
+
+            if (!validaModulo()) {
+                return;
+            }
 
             formBlock.classList.remove('opacity-100', 'translate-y-0');
             formBlock.classList.add('opacity-0', '-translate-y-4');
@@ -451,14 +560,12 @@
             }, 500);
         }
 
-        /* Funzione 3: Ritorno all'Home page iniziale */
         function annullaTutto() {
             formBlock.classList.remove('opacity-100', 'translate-y-0');
             formBlock.classList.add('opacity-0', 'translate-y-4');
             confirmBlock.classList.remove('opacity-100', 'translate-y-0');
             confirmBlock.classList.add('opacity-0', 'translate-y-4');
 
-            // Ripristina il titolo
             titleElement.classList.add('opacity-0');
             setTimeout(() => {
                 titleElement.innerText = "Comment Réserver";
@@ -475,16 +582,13 @@
             }, 500);
         }
 
-        /* Funzione 4: Invia i dati al backend dopo l'animazione di 3 secondi */
         function inviaForm() {
-            // Mostra la schermata di caricamento
             loaderBlock.classList.remove('hidden');
             setTimeout(() => {
                 loaderBlock.classList.remove('opacity-0');
                 loaderBlock.classList.add('opacity-100');
             }, 50);
 
-            // Attendi 3 secondi, poi invia realmente il form
             setTimeout(() => {
                 document.getElementById('prenotazioneForm').submit();
             }, 3000);
