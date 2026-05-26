@@ -18,7 +18,7 @@ app.secret_key = 'wecadi_prestige_key_2026'
 app.permanent_session_lifetime = timedelta(days=90)
 
 # Password fissa per l'amministratore
-ADMIN_PASSWORD = 'wecadi2026'
+ADMIN_PASSWORD = 'w26-wecadi'
 
 # ----------------- ROTTE PUBBLICHE ----------------- #
 
