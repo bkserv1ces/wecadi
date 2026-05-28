@@ -139,19 +139,42 @@ def logout():
 
 @app.route('/dashboard')
 def user_dashboard():
-    # Controllo di sicurezza
-    if 'user_id' not in session: return redirect(url_for('login_page'))
-    user_data = supabase.table("prenotazioni").select("*").eq("id", session['user_id']).execute().data[0]
+    if 'user_id' not in session: 
+        return redirect(url_for('login_page'))
+
+    # Recupero dati utente
+    response = supabase.table("prenotazioni").select("*").eq("id", session['user_id']).execute()
     
-    # Calcolo del riepilogo bevande
-    ordini_bar = user_data.get('ordini_bar') or {}
+    if not response.data:
+        session.pop('user_id', None)
+        return redirect(url_for('login_page'))
+
+    user_data = response.data[0]
+
+    # CORREZIONE CRITICA: gestione sicura del JSON
+    ordini_bar = user_data.get('ordini_bar')
+    
+    # Gestion sécurisée pour éviter le crash
+    if ordini_bar is None or ordini_bar == {}:
+        cart_data = {}
+    elif isinstance(ordini_bar, str):
+        try:
+            import json
+            cart_data = json.loads(ordini_bar)
+        except:
+            cart_data = {}
+    else:
+        cart_data = ordini_bar
+
+
     boissons_details = []
     total_bar = 0
-    
-    for item_id, qty in ordini_bar.items():
+
+    # Calcolo del riepilogo bevande
+    # Usiamo cart_data che ora è garantito essere un dizionario
+    for item_id, qty in cart_data.items():
         if qty > 0 and item_id in INVENTORY:
             item = INVENTORY[item_id]
-            # Calcolo considerando le promozioni (es. 3 per 10€)
             if 'bundleQty' in item and 'bundlePrice' in item:
                 bundles = qty // item['bundleQty']
                 remainder = qty % item['bundleQty']
@@ -165,7 +188,9 @@ def user_dashboard():
                 'qty': qty,
                 'line_total': line_total
             })
-            tier_bar = user_data.get('tier_bar', 'Classique')
+
+    tier_bar = user_data.get('tier_bar', 'Classique')
+
     return render_template('user_dashboard.html', 
                            user=list(user_data.values()), 
                            boissons_details=boissons_details, 
