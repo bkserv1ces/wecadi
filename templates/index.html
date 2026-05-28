@@ -79,16 +79,19 @@
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.3); 
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.5); 
+            background: rgba(212, 175, 55, 0.5);
             border-radius: 10px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(212, 175, 55, 1); 
+            background: rgba(212, 175, 55, 1);
         }
     </style>
 </head>
@@ -122,8 +125,8 @@
     <div class="absolute top-4 left-4 sm:top-8 sm:left-8 z-30 flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-1 group cursor-pointer"
         onclick="">
         <img src="/static/images/00.png" alt="Sponsor Ufficiale"
-        class="h-9 sm:h-12 object-contain transition-all duration-500 ease-in-out group-hover:![filter:none] group-active:![filter:none]"
-        style="filter: brightness(0) saturate(100%) invert(76%) sepia(32%) saturate(735%) hue-rotate(2deg) brightness(93%) contrast(88%);">
+            class="h-9 sm:h-12 object-contain transition-all duration-500 ease-in-out group-hover:![filter:none] group-active:![filter:none]"
+            style="filter: brightness(0) saturate(100%) invert(76%) sepia(32%) saturate(735%) hue-rotate(2deg) brightness(93%) contrast(88%);">
         <span
             class="hidden sm:block text-[8px] sm:text-[9px] text-white/50 uppercase tracking-widest transition duration-300 group-hover:text-white group-active:text-white">
             P a r t e n a i r e . O f f i c i e l
@@ -185,21 +188,22 @@
             {% endwith %}
         </div>
 
+        <!-- Conteneur principal avec grille : 1 colonne sur mobile, 2 sur PC -->
         <div id="info-block"
-            class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 fade-transition opacity-100 transform translate-y-0">
+            class="w-full max-w-[900px] grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 fade-transition opacity-100 transform translate-y-0">
 
+            <!-- Colonne 1 : Le Ticket (ce que tu avais déjà) -->
             <div
                 class="bg-black/60 backdrop-blur-md box-gold-border rounded-2xl p-6 sm:p-8 relative flex flex-col items-center text-center mt-4 md:mt-0">
                 <div
                     class="absolute -top-4 bg-gradient-to-r from-goldDark to-gold text-black font-black uppercase tracking-widest text-sm px-6 py-1.5 rounded-full shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
-                    Étape 1
+                    Ticket
                 </div>
                 <h4 class="text-white font-bold tracking-widest mt-4 mb-2 text-sm sm:text-base">RÉSERVEZ LE TICKET<br>EN
                     LIGNE :</h4>
                 <div
                     class="text-5xl sm:text-6xl font-black text-gold mb-4 drop-shadow-[0_2px_10px_rgba(212,175,55,0.5)]">
-                    30€
-                </div>
+                    30€</div>
                 <div class="w-full bg-gradient-to-r from-transparent via-gold to-transparent h-[1px] mb-6 relative">
                     <div
                         class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-bgDark px-3 text-gold font-bold text-xs tracking-widest">
@@ -211,33 +215,28 @@
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-door-open"></i>
-                        </div>Accès à la salle
+                            <i class="fa-solid fa-door-open"></i></div>Accès à la salle
                     </li>
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-martini-glass-citrus"></i>
-                        </div><span class="leading-tight">45 min
+                            <i class="fa-solid fa-martini-glass-citrus"></i></div><span class="leading-tight">45 min
                             d'apéro de bienvenue <span class="text-gold block text-xs">À VOLONTÉ</span></span>
                     </li>
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-chair"></i>
-                        </div>Place assise
+                            <i class="fa-solid fa-chair"></i></div>Place assise
                     </li>
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-clapperboard"></i>
-                        </div>Projection du film
+                            <i class="fa-solid fa-clapperboard"></i></div>Projection du film
                     </li>
                     <li class="flex items-center gap-4">
                         <div
                             class="w-8 h-8 rounded-full border border-gold flex items-center justify-center text-gold shrink-0">
-                            <i class="fa-solid fa-music"></i>
-                        </div>Soirée dansante
+                            <i class="fa-solid fa-music"></i></div>Soirée dansante
                     </li>
                 </ul>
                 <button type="button" onclick="mostraModulo()"
@@ -246,60 +245,30 @@
                 </button>
             </div>
 
+            <!-- Colonne 2 : Contacts Sergio (Intégrée dans la grille) -->
             <div
-                class="bg-black/60 backdrop-blur-md box-gold-border rounded-2xl p-6 sm:p-8 relative flex flex-col items-center text-center mt-6 md:mt-0">
-                <!-- Etichetta Etape 2 -->
-                <div
-                    class="absolute -top-4 bg-gradient-to-r from-goldDark to-gold text-black font-black uppercase tracking-widest text-sm px-6 py-1.5 rounded-full shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
-                    Étape 2
+                class="bg-black/40 border border-white/5 rounded-2xl p-6 text-center h-full flex flex-col justify-center">
+                <h3 class="text-gold font-bold uppercase tracking-[0.2em] text-[10px] mb-4">Besoin d'informations ?</h3>
+                <div class="flex flex-col items-center gap-4">
+                    <div
+                        class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center border border-gold/30">
+                        <i class="fa-solid fa-user-tie text-gold text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-white font-bold text-sm tracking-widest">Sergio Nguedia</p>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Organisateur WECADI</p>
+                    </div>
+                    <div class="flex flex-col gap-2 w-full mt-2">
+                        <a href="tel:+393896123577"
+                            class="flex items-center justify-center gap-3 py-3 bg-white/5 hover:bg-white/10 rounded-lg text-xs text-gray-300 transition">
+                            <i class="fa-solid fa-phone text-gold"></i> +39 389 612 3577
+                        </a>
+                        <a href="https://wa.me/393896123577?text=Bonjour%20Sergio..." target="_blank"
+                            class="flex items-center justify-center gap-3 py-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 rounded-lg text-xs text-[#25D366] transition">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> Envoyer un message
+                        </a>
+                    </div>
                 </div>
-                
-                <h4 class="text-white font-bold tracking-widest mt-4 mb-4 text-sm sm:text-base">LA CARTE DU BAR</h4>
-                
-                <!-- Lista delle bevande scorrevole -->
-                <div class="w-full text-left text-[10px] sm:text-xs text-gray-300 space-y-2.5 mb-6 h-48 overflow-y-auto pr-3 custom-scrollbar">
-                    
-                    <p class="text-gold font-bold uppercase border-b border-gold/30 pb-1 mb-2">Champagnes & Vins</p>
-                    <div class="flex justify-between items-center"><span>Ruinart</span><span class="text-white text-[9px] uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded">Sur réservation</span></div>
-                    <div class="flex justify-between"><span>Moët</span><span class="text-white font-bold">100€</span></div>
-                    <div class="flex justify-between"><span>Veuve Clicquot</span><span class="text-white font-bold">100€</span></div>
-                    <div class="flex justify-between"><span>Luc Belaire</span><span class="text-white font-bold">80€</span></div>
-                    <div class="flex justify-between"><span>Colligny</span><span class="text-white font-bold">75€</span></div>
-                    <div class="flex justify-between"><span>Prosecco</span><span class="text-white font-bold">30€</span></div>
-                    <div class="flex justify-between"><span>Spumante</span><span class="text-white font-bold">30€</span></div>
-                    
-                    <p class="text-gold font-bold uppercase border-b border-gold/30 pb-1 mt-4 mb-2">Spiritueux</p>
-                    <div class="flex justify-between"><span>Gold</span><span class="text-white font-bold">100€</span></div>
-                    <div class="flex justify-between"><span>Black Label</span><span class="text-white font-bold">75€</span></div>
-                    <div class="flex justify-between"><span>Jack Daniel's</span><span class="text-white font-bold">70€</span></div>
-                    <div class="flex justify-between"><span>Vecchia Romagna</span><span class="text-white font-bold">50€</span></div>
-                    <div class="flex justify-between"><span>Baileys</span><span class="text-white font-bold">50€</span></div>
-                    
-                    <p class="text-gold font-bold uppercase border-b border-gold/30 pb-1 mt-4 mb-2">Softs</p>
-                    <div class="flex justify-between"><span>Redbull</span><span class="text-white font-bold">3 pour 10€</span></div>
-                    <div class="flex justify-between"><span>Coca</span><span class="text-white font-bold">5€ <span class="text-gray-500 font-normal">(3 pour 10€)</span></span></div>
-                    <div class="flex justify-between"><span>Malta</span><span class="text-white font-bold">5€</span></div>
-                    <div class="flex justify-between"><span>Eau</span><span class="text-white font-bold">2€ <span class="text-gray-500 font-normal">(3 pour 5€)</span></span></div>
-                </div>
-
-                <div class="w-full bg-gradient-to-r from-transparent via-gold to-transparent h-[1px] mb-4 relative"></div>
-                
-                <!-- Contatto Sergio -->
-                <div class="mb-5">
-                    <div class="text-gold font-bold text-xl sm:text-2xl tracking-wider">+39 389 612 3577</div>
-                    <div class="text-gray-400 text-[10px] tracking-widest uppercase mt-1">(Sergio Nguedia)</div>
-                </div>
-
-                <!-- Pulsante di prenotazione dinamico -->
-                {% if is_logged_in %}
-                <a href="/panier_bar" class="w-full bg-gradient-to-r from-goldDark via-gold to-goldLight text-black font-black uppercase tracking-widest text-sm py-4 rounded-lg hover:shadow-[0_0_25px_rgba(212,175,55,0.6)] transition-all duration-300 text-center">
-                    Réserver mes boissons
-                </a>
-                {% else %}
-                <button type="button" onclick="mostraAlertBoissons()" class="w-full bg-transparent border-2 border-gold text-gold font-black uppercase tracking-widest text-sm py-3.5 rounded-lg hover:bg-gold hover:text-black transition-all duration-300">
-                    Réserver mes boissons
-                </button>
-                {% endif %}
             </div>
 
         </div>
@@ -396,18 +365,25 @@
         </div>
 
         <!-- Modale avviso prenotazione biglietto prima delle bevande -->
-        <div id="boissons-alert-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 opacity-0 hidden transition-opacity duration-300 px-4">
-            <div class="bg-bgDark border-2 border-magentaCustom rounded-2xl p-6 sm:p-8 max-w-sm text-center shadow-[0_0_30px_rgba(233,30,99,0.2)]">
-                <div class="w-16 h-16 rounded-full bg-magentaCustom/10 flex items-center justify-center mx-auto mb-4 border border-magentaCustom/50">
+        <div id="boissons-alert-modal"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 opacity-0 hidden transition-opacity duration-300 px-4">
+            <div
+                class="bg-bgDark border-2 border-magentaCustom rounded-2xl p-6 sm:p-8 max-w-sm text-center shadow-[0_0_30px_rgba(233,30,99,0.2)]">
+                <div
+                    class="w-16 h-16 rounded-full bg-magentaCustom/10 flex items-center justify-center mx-auto mb-4 border border-magentaCustom/50">
                     <i class="fa-solid fa-lock text-2xl text-magentaCustom"></i>
                 </div>
                 <h3 class="text-white font-bold tracking-widest mb-3 uppercase text-sm">Action Requise</h3>
                 <p class="text-gray-400 text-xs leading-relaxed mb-6">
-                    L'accès au bar en ligne est réservé aux participants. Veuillez d'abord <strong>réserver votre ticket (Étape 1)</strong> ou vous connecter à votre espace.
+                    L'accès au bar en ligne est réservé aux participants. Veuillez d'abord <strong>réserver votre ticket
+                        (Étape 1)</strong> ou vous connecter à votre espace.
                 </p>
                 <div class="flex gap-3">
-                    <button onclick="chiudiAlertBoissons()" class="flex-1 py-3 rounded text-[10px] uppercase tracking-widest font-bold border border-gray-600 text-gray-400 hover:text-white transition">Fermer</button>
-                    <a href="/login" class="flex-1 py-3 rounded text-[10px] uppercase tracking-widest font-bold bg-magentaCustom text-white hover:bg-pink-600 transition">Se connecter</a>
+                    <button onclick="chiudiAlertBoissons()"
+                        class="flex-1 py-3 rounded text-[10px] uppercase tracking-widest font-bold border border-gray-600 text-gray-400 hover:text-white transition">Fermer</button>
+                    <a href="/login"
+                        class="flex-1 py-3 rounded text-[10px] uppercase tracking-widest font-bold bg-magentaCustom text-white hover:bg-pink-600 transition">Se
+                        connecter</a>
                 </div>
             </div>
         </div>

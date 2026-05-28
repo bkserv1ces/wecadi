@@ -19,8 +19,8 @@ INVENTORY = {
     'gold': {'name': 'Gold', 'price': 100},
     'black_label': {'name': 'Black Label', 'price': 75},
     'jack_daniel': {'name': "Jack Daniel's", 'price': 70},
-    'vecchia_romagna': {'name': 'Vecchia Romagna', 'price': 50},
-    'baileys': {'name': 'Baileys', 'price': 50},
+    'vecchia_romagna': {'name': 'Vecchia Romagna', 'price': 40},
+    'baileys': {'name': 'Baileys', 'price': 40},
     'redbull': {'name': 'Redbull', 'price': 4, 'bundleQty': 3, 'bundlePrice': 10},
     'coca': {'name': 'Coca', 'price': 5, 'bundleQty': 3, 'bundlePrice': 10},
     'malta': {'name': 'Malta', 'price': 5},
@@ -200,10 +200,15 @@ def user_dashboard():
 @app.route('/panier_bar', methods=['GET'])
 def afficher_panier():
     if 'user_id' not in session: return redirect(url_for('login_page'))
-    # Recupero degli ordini esistenti per pre-compilare il carrello
-    user_data = supabase.table("prenotazioni").select("ordini_bar").eq("id", session['user_id']).execute().data[0]
-    existing_cart = user_data.get('ordini_bar') or {}
     
+    # Sécurité : vérifier le statut avant d'afficher le panier
+    user_data = supabase.table("prenotazioni").select("stato, ordini_bar").eq("id", session['user_id']).execute().data[0]
+    
+    if user_data['stato'] == 'In attesa':
+        flash('Veuillez payer votre ticket pour accéder au bar.', 'error')
+        return redirect(url_for('user_dashboard'))
+        
+    existing_cart = user_data.get('ordini_bar') or {}
     return render_template('panier_bar.html', existing_cart=existing_cart)
 
 @app.route('/valider_panier', methods=['POST'])

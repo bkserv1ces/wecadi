@@ -155,14 +155,34 @@
 
             <!-- Sistema di navigazione a schede (Tabs) -->
             <div class="flex w-full mb-6 border-b border-white/10">
+                <!-- Bottone Billet (Sempre attivo) -->
                 <button id="tab-invitation" onclick="switchTab('invitation')"
                     class="flex-1 pb-3 text-xs sm:text-sm font-bold uppercase tracking-widest text-gold border-b-2 border-gold transition-colors duration-300">
                     <i class="fa-solid fa-ticket mr-2"></i>Billet
                 </button>
+
+                <!-- Bottone Bar (Condizionale) -->
+                {% if user[4] == 'In attesa' %}
+                <div class="relative flex-1">
+                    <button disabled onmouseenter="showTooltip()" onmouseleave="hideTooltip()"
+                        class="w-full pb-3 text-xs sm:text-sm font-bold uppercase tracking-widest text-gray-700 border-b-2 border-transparent cursor-not-allowed">
+                        <i class="fa-solid fa-lock mr-2"></i>Bar
+                    </button>
+
+                    <div id="bar-tooltip"
+                        class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 p-3 bg-black border border-magentaCustom rounded-lg shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+                        <p class="text-[10px] text-white text-center font-bold uppercase tracking-widest">
+                            <i class="fa-solid fa-triangle-exclamation text-magentaCustom mr-1"></i> Payez votre ticket pour débloquer le bar.
+                        </p>
+                        <div class="absolute -top-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-black border-t border-l border-magentaCustom rotate-45"></div>
+                    </div>
+                </div>
+                {% else %}
                 <button id="tab-boissons" onclick="switchTab('boissons')"
                     class="flex-1 pb-3 text-xs sm:text-sm font-bold uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-gray-300 transition-colors duration-300">
                     <i class="fa-solid fa-martini-glass mr-2"></i>Bar
                 </button>
+                {% endif %}
             </div>
 
             <!-- Contenuto della scheda: INVITATION -->
@@ -234,7 +254,7 @@
                                 Virement Bancaire</p>
                             <div class="space-y-1.5 text-xs font-mono">
                                 <div class="flex justify-between"><span class="text-gray-500 font-sans">IBAN:</span>
-                                    <span class="text-white select-all">IT35 A010 3012 1570 0000 2390 265</span>
+                                    <span class="text-white select-all">IT35A0103012157000002390265</span>
                                 </div>
                                 <div class="flex justify-between"><span class="text-gray-500 font-sans">Nom:</span>
                                     <span class="text-white">Ndjiki Lydie Ingrid</span>
@@ -379,13 +399,25 @@
             }
         }
 
+        function showTooltip() {
+            const tooltip = document.getElementById('bar-tooltip');
+            tooltip.classList.remove('opacity-0');
+            tooltip.classList.add('opacity-100');
+        }
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('bar-tooltip');
+            tooltip.classList.remove('opacity-100');
+            tooltip.classList.add('opacity-0');
+        }
+
         /* Controlla l'URL per aprire automaticamente la scheda bevande dopo la conferma */
-        window.onload = function() {
+        window.onload = function () {
             const urlParams = new URLSearchParams(window.location.search);
-            
+
             if (urlParams.get('tab') === 'boissons') {
                 switchTab('boissons');
-                
+
                 /* Pulisce l'URL rimuovendo il parametro ?tab=boissons in modo invisibile. 
                    Così, se il cliente aggiorna la pagina, tornerà al tab di default (Billet). */
                 const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
