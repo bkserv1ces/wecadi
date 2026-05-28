@@ -68,19 +68,23 @@
 
     <div
       class="flex flex-row items-center justify-between bg-white/5 border border-white/10 rounded-xl p-4 sm:p-6 mb-8 shadow-2xl backdrop-blur-md">
-      <div class="flex-1 text-center border-r border-white/10">
+      <div id="filter-present" onclick="setFilter('Présent', this)"
+        class="stat-filter flex-1 text-center border-r border-white/10 cursor-pointer hover:bg-white/10 rounded-l-lg transition-all duration-300 py-2 opacity-50">
         <p class="text-[8px] sm:text-[10px] text-blue-400 uppercase tracking-widest mb-1">Présents</p>
         <p class="text-2xl sm:text-4xl font-bold text-blue-400">{{ stats.presents }}</p>
       </div>
-      <div class="flex-1 text-center border-r border-white/10">
+      <div id="filter-all" onclick="setFilter('All', this)"
+        class="stat-filter flex-1 text-center border-r border-white/10 cursor-pointer hover:bg-white/10 transition-all duration-300 py-2 opacity-100">
         <p class="text-[8px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Reservés</p>
         <p class="text-2xl sm:text-4xl font-bold text-white">{{ stats.total }}</p>
       </div>
-      <div class="flex-1 text-center border-r border-white/10">
+      <div id="filter-paye" onclick="setFilter('Payé', this)"
+        class="stat-filter flex-1 text-center border-r border-white/10 cursor-pointer hover:bg-white/10 transition-all duration-300 py-2 opacity-50">
         <p class="text-[8px] sm:text-[10px] text-green-500 uppercase tracking-widest mb-1">Payés</p>
         <p class="text-2xl sm:text-4xl font-bold text-green-500">{{ stats.confirmes }}</p>
       </div>
-      <div class="flex-1 text-center">
+      <div id="filter-attente" onclick="setFilter('In attesa', this)"
+        class="stat-filter flex-1 text-center cursor-pointer hover:bg-white/10 rounded-r-lg transition-all duration-300 py-2 opacity-50">
         <p class="text-[8px] sm:text-[10px] text-magentaCustom uppercase tracking-widest mb-1">En Attente</p>
         <p class="text-2xl sm:text-4xl font-bold text-magentaCustom">{{ stats.en_attente }}</p>
       </div>
@@ -91,18 +95,16 @@
         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           <i class="fa-solid fa-magnifying-glass text-gold/50"></i>
         </div>
-        <input type="text" id="searchInput" placeholder="Rechercher nom, tél, ID client ou Code QR..."
+        <input type="text" id="searchInput" placeholder="Rechercher nom, tél ou Code QR..."
           class="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-11 pr-4 text-sm text-white focus:border-gold focus:outline-none transition">
       </div>
     </div>
 
     <div class="space-y-3 sm:space-y-0 sm:bg-white/5 sm:border sm:border-white/10 sm:rounded-xl" id="prenotazioniList">
       {% for p in prenotazioni %}
-      <div
+      <div data-status="{{ p[4] }}"
         class="prenotazione-item grid grid-cols-2 sm:grid-cols-12 gap-y-3 gap-x-2 p-4 sm:p-5 border border-white/10 rounded-xl sm:border-0 sm:border-b sm:border-white/5 items-center transition-all duration-300">
-
         <div class="col-span-2 sm:col-span-4 flex items-center gap-3">
-          <span class="text-gold font-bold w-6">#{{ p[0] }}</span>
           <div class="flex flex-col">
             <div class="flex items-center gap-2">
               <span class="font-bold text-white nome-text text-sm sm:text-base">{{ p[1] }}</span>
@@ -153,7 +155,35 @@
           <button onclick="openDeleteModal('/admin/supprimer/{{ p[0] }}')"
             class="px-2 sm:px-3 py-1.5 bg-red-500/20 text-red-500 rounded text-[8px] sm:text-[9px] font-bold uppercase hover:bg-red-500/40 transition">Supp</button>
         </div>
+        {% if p[7] > 0 %}
+        <div
+          class="col-span-2 sm:col-span-12 mt-2 pt-3 border-t border-white/5 flex flex-row justify-between items-center gap-3 w-full">
 
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-full bg-magentaCustom/10 flex items-center justify-center border border-magentaCustom/30 shrink-0">
+              <i class="fa-solid fa-martini-glass text-magentaCustom text-xs"></i>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-bold text-white uppercase tracking-widest">Bar: {{ p[7] }}€</span>
+            </div>
+          </div>
+
+          <div class="flex items-center bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
+            <select onchange="window.location.href='/admin/set_tier/{{ p[0] }}/' + this.value"
+              class="bg-transparent text-[10px] font-bold uppercase tracking-widest cursor-pointer focus:outline-none transition-colors
+                    {% if p[8] == 'VIP' %} text-magentaCustom {% elif p[8] == 'Premium' %} text-gold {% else %} text-gray-400 {% endif %}">
+              <option value="Classique" class="bg-black text-gray-400" {% if p[8]=='Classique' %}selected{% endif %}>
+                Classique</option>
+              <option value="Premium" class="bg-black text-gold" {% if p[8]=='Premium' %}selected{% endif %}>Premium
+              </option>
+              <option value="VIP" class="bg-black text-magentaCustom" {% if p[8]=='VIP' %}selected{% endif %}>VIP
+              </option>
+            </select>
+          </div>
+
+        </div>
+        {% endif %}
       </div>
       {% endfor %}
     </div>
@@ -201,9 +231,32 @@
 
   <script src="https://unpkg.com/html5-qrcode"></script>
   <script>
-    /* Ricerca reattiva in tempo reale */
-    document.getElementById('searchInput').addEventListener('input', function () {
-      const query = this.value.toLowerCase();
+    /* -------------------------------------------------------------------------- */
+    /* 1. FILTRI E RICERCA COMBINATI                                              */
+    /* -------------------------------------------------------------------------- */
+
+    /* Variabile globale per memorizzare il filtro attivo (di default 'All') */
+    let currentFilter = 'All';
+
+    /* Funzione attivata al clic sui numeri delle statistiche */
+    function setFilter(status, element) {
+      currentFilter = status;
+
+      /* Gestione visiva: rende opachi i filtri non attivi e illumina quello cliccato */
+      document.querySelectorAll('.stat-filter').forEach(el => {
+        el.classList.remove('opacity-100');
+        el.classList.add('opacity-50');
+      });
+      element.classList.remove('opacity-50');
+      element.classList.add('opacity-100');
+
+      /* Applica i filtri (ricerca + status) */
+      applyFilters();
+    }
+
+    /* Funzione combinata: applica sia la ricerca testuale che il filtro di stato */
+    function applyFilters() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
       const items = document.querySelectorAll('.prenotazione-item');
 
       items.forEach(item => {
@@ -212,25 +265,85 @@
         const id = item.querySelector('.id-text').innerText.toLowerCase();
         const qr = item.querySelector('.qr-text').innerText.toLowerCase();
 
-        if (query === '' || nome.includes(query) || telefono.includes(query) || id.includes(query) || qr.includes(query)) {
+        /* Recupera lo stato nascosto nell'HTML (In attesa, Confirmé, Présent, ecc.) */
+        const itemStatus = item.getAttribute('data-status');
+
+        /* 1. Controllo ricerca testuale */
+        const matchesSearch = query === '' || nome.includes(query) || telefono.includes(query) || id.includes(query) || qr.includes(query);
+
+        /* 2. Controllo filtro di stato cliccato */
+        let matchesStatus = false;
+        if (currentFilter === 'All') {
+          matchesStatus = true;
+        } else if (currentFilter === 'Payé') {
+          /* "Payé" include sia quelli "Confirmé" che quelli già "Présent" */
+          matchesStatus = (itemStatus === 'Confirmé' || itemStatus === 'Présent');
+        } else {
+          matchesStatus = (itemStatus === currentFilter);
+        }
+
+        /* Se l'utente corrisponde a ENTRAMBE le condizioni, lo mostriamo */
+        if (matchesSearch && matchesStatus) {
           item.style.display = '';
         } else {
           item.style.display = 'none';
         }
       });
-    });
+    }
 
-    /* Scanner */
+    /* Ascolta la digitazione nella barra di ricerca e applica i filtri in tempo reale */
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+
+    /* -------------------------------------------------------------------------- */
+    /* 2. SCANNER QR CODE                                                         */
+    /* -------------------------------------------------------------------------- */
     const html5QrCode = new Html5Qrcode("reader");
     function processCode() { const code = document.getElementById('manualCode').value; if (code) window.location.href = "/scan_manual/" + code; }
     function startScan() { html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (decodedText) => { window.location.href = "/scan_manual/" + decodedText; }); }
     function closeScanModal() { document.getElementById('scanModal').classList.add('hidden'); html5QrCode.stop(); }
 
-    /* Modali */
+
+    /* -------------------------------------------------------------------------- */
+    /* 3. GESTIONE MODALI (Popup)                                                 */
+    /* -------------------------------------------------------------------------- */
     function openDeleteModal(url) { document.getElementById('confirmDeleteBtn').href = url; document.getElementById('deleteModal').classList.remove('opacity-0', 'pointer-events-none'); }
     function closeDeleteModal() { document.getElementById('deleteModal').classList.add('opacity-0', 'pointer-events-none'); }
     function openSuspendModal(url) { document.getElementById('confirmSuspendBtn').href = url; document.getElementById('suspendModal').classList.remove('opacity-0', 'pointer-events-none'); }
     function closeSuspendModal() { document.getElementById('suspendModal').classList.add('opacity-0', 'pointer-events-none'); }
+
+    /* -------------------------------------------------------------------------- */
+    /* 4. AGGIORNAMENTO AUTOMATICO SILENZIOSO (POLLING)                           */
+    /* -------------------------------------------------------------------------- */
+    setInterval(function() {
+      fetch(window.location.href)
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          /* 1. Aggiorna solo i NUMERI delle statistiche (per non resettare i clic attivi) */
+          const statsToUpdate = ['filter-present', 'filter-all', 'filter-paye', 'filter-attente'];
+          statsToUpdate.forEach(id => {
+              const currentStat = document.querySelector(`#${id} p:nth-child(2)`);
+              const newStat = doc.querySelector(`#${id} p:nth-child(2)`);
+              if (currentStat && newStat) {
+                  currentStat.innerText = newStat.innerText;
+              }
+          });
+          
+          /* 2. Aggiorna l'intera lista dei clienti e i relativi prezzi */
+          const newList = doc.getElementById('prenotazioniList');
+          const currentList = document.getElementById('prenotazioniList');
+          if (newList && currentList) {
+            currentList.innerHTML = newList.innerHTML;
+          }
+          
+          /* 3. Riapplica immediatamente la ricerca e il filtro di stato attualmente attivi */
+          applyFilters();
+        })
+        .catch(error => console.error('Errore durante il refresh invisibile:', error));
+    }, 10000); /* 10000 ms = Si aggiorna automaticamente ogni 10 secondi */
   </script>
 </body>
 

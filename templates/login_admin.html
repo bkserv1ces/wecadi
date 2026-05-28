@@ -39,7 +39,7 @@
         {% with messages = get_flashed_messages(category_filter=["admin_error"]) %}
         {% if messages %}
         <div
-            class="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] uppercase tracking-widest p-3 rounded-md mb-5 text-center">
+            class="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] uppercase tracking-widest p-3 rounded-md mb-5 text-center" >
             {{ messages[0] }}
         </div>
         {% endif %}

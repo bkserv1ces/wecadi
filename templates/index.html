@@ -74,6 +74,22 @@
         .animate-scroll:hover {
             animation-play-state: paused;
         }
+
+        /* Stili per la scrollbar della lista bevande */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3); 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5); 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 1); 
+        }
     </style>
 </head>
 
@@ -103,14 +119,15 @@
         {% endif %}
     </header>
 
-    <div class="absolute top-4 left-4 sm:top-8 sm:left-8 z-30 flex items-center gap-3 group cursor-pointer" onclick="">
+    <div class="absolute top-4 left-4 sm:top-8 sm:left-8 z-30 flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-1 group cursor-pointer"
+        onclick="">
+        <img src="/static/images/00.png" alt="Sponsor Ufficiale"
+        class="h-9 sm:h-12 object-contain transition-all duration-500 ease-in-out group-hover:![filter:none] group-active:![filter:none]"
+        style="filter: brightness(0) saturate(100%) invert(76%) sepia(32%) saturate(735%) hue-rotate(2deg) brightness(93%) contrast(88%);">
         <span
             class="hidden sm:block text-[8px] sm:text-[9px] text-white/50 uppercase tracking-widest transition duration-300 group-hover:text-white group-active:text-white">
-            Partenaire Officiel
+            P a r t e n a i r e . O f f i c i e l
         </span>
-        <img src="/static/images/00.png" alt="Sponsor Ufficiale"
-            class="h-9 sm:h-12 object-contain transition-all duration-500 ease-in-out group-hover:![filter:none] group-active:![filter:none]"
-            style="filter: brightness(0) saturate(100%) invert(76%) sepia(32%) saturate(735%) hue-rotate(2deg) brightness(93%) contrast(88%);">
     </div>
 
     <main class="relative z-10 w-[95%] max-w-[900px] mt-16 sm:mt-12 flex flex-col items-center">
@@ -231,33 +248,58 @@
 
             <div
                 class="bg-black/60 backdrop-blur-md box-gold-border rounded-2xl p-6 sm:p-8 relative flex flex-col items-center text-center mt-6 md:mt-0">
+                <!-- Etichetta Etape 2 -->
                 <div
                     class="absolute -top-4 bg-gradient-to-r from-goldDark to-gold text-black font-black uppercase tracking-widest text-sm px-6 py-1.5 rounded-full shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
                     Étape 2
                 </div>
-                <div class="w-20 h-20 mt-4 mb-6 rounded-full border-[3px] border-gold flex items-center justify-center">
-                    <i class="fa-solid fa-phone-volume text-4xl text-gold"></i>
+                
+                <h4 class="text-white font-bold tracking-widest mt-4 mb-4 text-sm sm:text-base">LA CARTE DU BAR</h4>
+                
+                <!-- Lista delle bevande scorrevole -->
+                <div class="w-full text-left text-[10px] sm:text-xs text-gray-300 space-y-2.5 mb-6 h-48 overflow-y-auto pr-3 custom-scrollbar">
+                    
+                    <p class="text-gold font-bold uppercase border-b border-gold/30 pb-1 mb-2">Champagnes & Vins</p>
+                    <div class="flex justify-between items-center"><span>Ruinart</span><span class="text-white text-[9px] uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded">Sur réservation</span></div>
+                    <div class="flex justify-between"><span>Moët</span><span class="text-white font-bold">100€</span></div>
+                    <div class="flex justify-between"><span>Veuve Clicquot</span><span class="text-white font-bold">100€</span></div>
+                    <div class="flex justify-between"><span>Luc Belaire</span><span class="text-white font-bold">80€</span></div>
+                    <div class="flex justify-between"><span>Colligny</span><span class="text-white font-bold">75€</span></div>
+                    <div class="flex justify-between"><span>Prosecco</span><span class="text-white font-bold">30€</span></div>
+                    <div class="flex justify-between"><span>Spumante</span><span class="text-white font-bold">30€</span></div>
+                    
+                    <p class="text-gold font-bold uppercase border-b border-gold/30 pb-1 mt-4 mb-2">Spiritueux</p>
+                    <div class="flex justify-between"><span>Gold</span><span class="text-white font-bold">100€</span></div>
+                    <div class="flex justify-between"><span>Black Label</span><span class="text-white font-bold">75€</span></div>
+                    <div class="flex justify-between"><span>Jack Daniel's</span><span class="text-white font-bold">70€</span></div>
+                    <div class="flex justify-between"><span>Vecchia Romagna</span><span class="text-white font-bold">50€</span></div>
+                    <div class="flex justify-between"><span>Baileys</span><span class="text-white font-bold">50€</span></div>
+                    
+                    <p class="text-gold font-bold uppercase border-b border-gold/30 pb-1 mt-4 mb-2">Softs</p>
+                    <div class="flex justify-between"><span>Redbull</span><span class="text-white font-bold">3 pour 10€</span></div>
+                    <div class="flex justify-between"><span>Coca</span><span class="text-white font-bold">5€ <span class="text-gray-500 font-normal">(3 pour 10€)</span></span></div>
+                    <div class="flex justify-between"><span>Malta</span><span class="text-white font-bold">5€</span></div>
+                    <div class="flex justify-between"><span>Eau</span><span class="text-white font-bold">2€ <span class="text-gray-500 font-normal">(3 pour 5€)</span></span></div>
                 </div>
-                <h4 class="text-white font-bold tracking-widest mb-6 text-sm sm:text-base">APPELER LE NUMÉRO</h4>
-                <div class="space-y-4 mb-6 w-full">
-                    <div>
-                        <div class="text-gold font-bold text-xl sm:text-2xl tracking-wider">+39 371 773 8019</div>
-                        <div class="text-gray-400 text-xs tracking-widest uppercase">(Murielle)</div>
-                    </div>
-                    <div class="text-sm font-light text-gray-500">OU</div>
-                    <div>
-                        <div class="text-gold font-bold text-xl sm:text-2xl tracking-wider">+39 392 430 5355</div>
-                        <div class="text-gray-400 text-xs tracking-widest uppercase">(Pachelle)</div>
-                    </div>
+
+                <div class="w-full bg-gradient-to-r from-transparent via-gold to-transparent h-[1px] mb-4 relative"></div>
+                
+                <!-- Contatto Sergio -->
+                <div class="mb-5">
+                    <div class="text-gold font-bold text-xl sm:text-2xl tracking-wider">+39 389 612 3577</div>
+                    <div class="text-gray-400 text-[10px] tracking-widest uppercase mt-1">(Sergio Nguedia)</div>
                 </div>
-                <div class="w-full bg-gradient-to-r from-transparent via-gold to-transparent h-[1px] mb-6 relative">
-                </div>
-                <h4 class="text-white font-bold tracking-widest text-sm mb-6 leading-relaxed">POUR RÉSERVER<br>VOS
-                    CONSOMMATIONS</h4>
-                <div class="flex gap-4 text-gold text-3xl mt-auto pb-2">
-                    <i class="fa-solid fa-wine-glass"></i><i class="fa-solid fa-whiskey-glass"></i><i
-                        class="fa-solid fa-bottle-water"></i>
-                </div>
+
+                <!-- Pulsante di prenotazione dinamico -->
+                {% if is_logged_in %}
+                <a href="/panier_bar" class="w-full bg-gradient-to-r from-goldDark via-gold to-goldLight text-black font-black uppercase tracking-widest text-sm py-4 rounded-lg hover:shadow-[0_0_25px_rgba(212,175,55,0.6)] transition-all duration-300 text-center">
+                    Réserver mes boissons
+                </a>
+                {% else %}
+                <button type="button" onclick="mostraAlertBoissons()" class="w-full bg-transparent border-2 border-gold text-gold font-black uppercase tracking-widest text-sm py-3.5 rounded-lg hover:bg-gold hover:text-black transition-all duration-300">
+                    Réserver mes boissons
+                </button>
+                {% endif %}
             </div>
 
         </div>
@@ -353,6 +395,38 @@
             </div>
         </div>
 
+        <!-- Modale avviso prenotazione biglietto prima delle bevande -->
+        <div id="boissons-alert-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 opacity-0 hidden transition-opacity duration-300 px-4">
+            <div class="bg-bgDark border-2 border-magentaCustom rounded-2xl p-6 sm:p-8 max-w-sm text-center shadow-[0_0_30px_rgba(233,30,99,0.2)]">
+                <div class="w-16 h-16 rounded-full bg-magentaCustom/10 flex items-center justify-center mx-auto mb-4 border border-magentaCustom/50">
+                    <i class="fa-solid fa-lock text-2xl text-magentaCustom"></i>
+                </div>
+                <h3 class="text-white font-bold tracking-widest mb-3 uppercase text-sm">Action Requise</h3>
+                <p class="text-gray-400 text-xs leading-relaxed mb-6">
+                    L'accès au bar en ligne est réservé aux participants. Veuillez d'abord <strong>réserver votre ticket (Étape 1)</strong> ou vous connecter à votre espace.
+                </p>
+                <div class="flex gap-3">
+                    <button onclick="chiudiAlertBoissons()" class="flex-1 py-3 rounded text-[10px] uppercase tracking-widest font-bold border border-gray-600 text-gray-400 hover:text-white transition">Fermer</button>
+                    <a href="/login" class="flex-1 py-3 rounded text-[10px] uppercase tracking-widest font-bold bg-magentaCustom text-white hover:bg-pink-600 transition">Se connecter</a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            /* Funzioni per gestire la modale delle bevande */
+            function mostraAlertBoissons() {
+                const modal = document.getElementById('boissons-alert-modal');
+                modal.classList.remove('hidden');
+                setTimeout(() => { modal.classList.remove('opacity-0'); modal.classList.add('opacity-100'); }, 50);
+            }
+
+            function chiudiAlertBoissons() {
+                const modal = document.getElementById('boissons-alert-modal');
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            }
+        </script>
     </main>
 
     <div id="loader-block"
@@ -442,10 +516,11 @@
         </div>
     </div>
 
-    <footer class="relative z-20 mt-12 mb-6 text-[10px] text-gray-500 tracking-[0.2em] uppercase text-center w-full flex flex-col items-center">
+    <footer
+        class="relative z-20 mt-12 mb-6 text-[10px] text-gray-500 tracking-[0.2em] uppercase text-center w-full flex flex-col items-center">
         <div class="h-[1px] w-32 bg-gradient-to-r from-transparent via-gold/30 to-transparent mx-auto mb-4"></div>
         <div class="mb-2">© WECADI 2026 • Padova, Italia</div>
-        
+
         <a href="/admin" class="text-gray-700 hover:text-gold transition duration-300 flex items-center gap-1.5 mt-2">
             <i class="fa-solid fa-lock text-[8px]"></i> Administration
         </a>
