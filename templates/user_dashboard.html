@@ -310,58 +310,54 @@
                 </div>
             </div>
 
-            <!-- Contenuto della scheda: BOISSONS (Nascosto di default) -->
             <div id="pane-boissons" class="w-full flex flex-col hidden transition-opacity duration-300">
-                {% if boissons_details %}
-                <div class="w-full">
-                    <h5
-                        class="text-gold font-bold uppercase tracking-widest text-xs mb-4 border-b border-white/10 pb-2">
-                        <i class="fa-solid fa-martini-glass mr-2"></i>Mes Pré-commandes
-                    </h5>
-
-                    <div class="bg-black/60 p-4 rounded-xl border border-white/5 mb-6 space-y-2">
-                        {% for b in boissons_details %}
-                        <div
-                            class="flex justify-between items-center text-sm border-b border-white/5 pb-2 last:border-0 last:pb-0">
-                            <span class="text-white"><span class="text-gray-500 font-mono">{{ b.qty }}x</span> {{ b.name
-                                }}</span>
-                            <span class="text-gold font-bold">{{ b.line_total }}€</span>
-                        </div>
-                        {% endfor %}
-                        <div class="mt-2 pt-3 border-t border-white/10 flex justify-between items-center">
-                            <span class="text-xs text-gray-400 uppercase tracking-widest font-bold">Total Bar:</span>
-                            <span class="text-xl text-green-400 font-black">{{ total_bar }}€</span>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3">
-                        <a href="/panier_bar"
-                            class="flex-1 text-center border border-gold/50 text-gold font-bold uppercase tracking-widest text-[10px] sm:text-xs py-3 rounded-lg hover:bg-gold/10 transition duration-300">
-                            Modifier ma commande
-                        </a>
-                    </div>
-
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest text-center mt-4">
-                        Paiement le jour de l'événement ou en avance via Sergio.
-                    </p>
-                </div>
-
-                {% else %}
-                <div class="text-center flex-1 flex flex-col justify-center items-center py-8">
-                    <div
-                        class="w-20 h-20 rounded-full border border-white/10 bg-black/40 flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-wine-bottle text-3xl text-gold/50"></i>
-                    </div>
-                    <h5 class="text-white font-bold tracking-widest uppercase text-sm mb-3">Pré-commandes Bar</h5>
-                    <p
-                        class="text-[10px] sm:text-xs text-gray-400 uppercase tracking-widest mb-8 leading-relaxed max-w-xs mx-auto">
-                        Vous pouvez pré-commander vos bouteilles et payer vos boissons <strong>à tout moment</strong>.
-                    </p>
-                    <a href="/panier_bar"
-                        class="bg-gradient-to-r from-goldDark via-gold to-goldLight text-black font-black uppercase tracking-widest text-xs px-8 py-3.5 rounded-lg hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition duration-300">
-                        Ouvrir la carte du bar
+                
+                <div class="mb-6">
+                    <a href="/panier_bar" class="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-goldDark via-gold to-goldLight text-black font-black uppercase tracking-widest text-xs rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition duration-300">
+                        <i class="fa-solid fa-plus"></i> Nouvelle Commande
                     </a>
                 </div>
+
+                <h5 class="text-white font-bold uppercase tracking-widest text-[10px] mb-4 border-b border-white/10 pb-2">
+                    <i class="fa-solid fa-clock-rotate-left text-gold mr-2"></i> Historique de vos commandes
+                </h5>
+
+                {% if storico_ordini %}
+                    <div class="space-y-4">
+                        {% for cmd in storico_ordini %}
+                        <div class="bg-black/40 border border-white/5 rounded-xl p-4 flex flex-col gap-3 relative overflow-hidden">
+                            {% if cmd.stato == 'À encaisser' %}
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-gold"></div>
+                            {% elif cmd.stato == 'À préparer' or cmd.stato == 'Prêt au bar' %}
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
+                            {% elif cmd.stato == 'Livré' %}
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500"></div>
+                            {% endif %}
+                            
+                            <div class="flex justify-between items-start pl-2">
+                                <div>
+                                    <span class="text-[9px] text-gray-500 uppercase tracking-widest">Commande #{{ cmd.id }}</span>
+                                    <p class="text-sm font-bold text-white mt-0.5">{{ cmd.dettagli_testo }}</p>
+                                </div>
+                                <span class="text-lg font-black text-gold">{{ cmd.totale }}€</span>
+                            </div>
+                            
+                            <div class="pl-2 flex justify-between items-center pt-2 border-t border-white/5">
+                                <span class="text-[9px] uppercase font-bold tracking-widest px-2 py-1 rounded 
+                                    {% if cmd.stato == 'À encaisser' %} bg-gold/10 text-gold border border-gold/30
+                                    {% elif cmd.stato == 'Livré' %} bg-green-500/10 text-green-500 border border-green-500/30
+                                    {% else %} bg-blue-500/10 text-blue-400 border border-blue-500/30 {% endif %}">
+                                    {{ cmd.stato }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-10 opacity-50">
+                        <i class="fa-solid fa-receipt text-3xl text-gray-600 mb-3"></i>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest">Aucune commande passée</p>
+                    </div>
                 {% endif %}
             </div>
 
@@ -411,47 +407,43 @@
             tooltip.classList.add('opacity-0');
         }
 
-        /* Controlla l'URL per aprire automaticamente la scheda bevande dopo la conferma */
+        /* Imposta il Bar come scheda predefinita al caricamento della pagina */
         window.onload = function () {
-            const urlParams = new URLSearchParams(window.location.search);
-
-            if (urlParams.get('tab') === 'boissons') {
-                switchTab('boissons');
-
-                /* Pulisce l'URL rimuovendo il parametro ?tab=boissons in modo invisibile. 
-                   Così, se il cliente aggiorna la pagina, tornerà al tab di default (Billet). */
-                const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
-            } else {
-                /* Forza sempre l'apertura del biglietto come comportamento predefinito */
-                switchTab('invitation');
-            }
+            switchTab('boissons');
         };
 
-        /* Memorizziamo lo stato iniziale del biglietto caricato dalla pagina */
+        /* Memorizza lo stato iniziale del biglietto e degli ordini */
         const initialStato = "{{ user[4] }}";
+        let initialStatiOrdini = null; 
 
-        /* Sistema di AJAX Polling per aggiornare flag bar e stato biglietto in tempo reale */
+        /* Sistema di AJAX Polling per aggiornare flag bar e stato biglietto/ordini in tempo reale */
         setInterval(function () {
             fetch('/api/live_status')
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) return;
 
-                    /* 1. Controllo se il biglietto è stato validato o sospeso dall'admin */
-                    if (data.stato !== initialStato) {
-                        /* Se lo stato principale cambia, ricarichiamo la pagina automaticamente per mostrare il QR Code */
-                        window.location.reload();
-                        return; /* Ferma l'esecuzione del resto */
+                    let currentStatiOrdini = JSON.stringify(data.stati_ordini);
+                    let ordiniCambiati = false;
+
+                    if (initialStatiOrdini === null) {
+                        initialStatiOrdini = currentStatiOrdini;
+                    } else if (initialStatiOrdini !== currentStatiOrdini) {
+                        ordiniCambiati = true;
                     }
 
-                    /* 2. Controllo e aggiornamento dinamico del badge VIP/Premium (senza ricaricare) */
+                    /* Se il biglietto cambia stato O un ordine cambia stato, ricarica la pagina */
+                    if (data.stato !== initialStato || ordiniCambiati) {
+                        window.location.reload();
+                        return;
+                    }
+
+                    /* Aggiornamento dinamico del badge VIP/Premium */
                     if (data.tier_bar) {
                         const container = document.getElementById('tier-badge-container');
                         if (!container) return;
 
                         let badgeHtml = '<h4 class="text-2xl font-black text-white tracking-widest uppercase">Dashboard</h4>';
-
                         if (data.tier_bar === 'VIP') {
                             badgeHtml += '<span class="px-2 py-1 bg-magentaCustom/20 text-magentaCustom border border-magentaCustom/50 text-[9px] font-bold uppercase tracking-widest rounded-md shadow-[0_0_10px_rgba(233,30,99,0.3)]">VIP</span>';
                         } else if (data.tier_bar === 'Premium') {
@@ -459,12 +451,11 @@
                         } else {
                             badgeHtml += '<span class="px-2 py-1 bg-gray-500/20 text-gray-300 border border-gray-500/50 text-[9px] font-bold uppercase tracking-widest rounded-md">Classique</span>';
                         }
-
                         container.innerHTML = badgeHtml;
                     }
                 })
                 .catch(error => console.error("Silenzio errore di polling:", error));
-        }, 5000); /* Controllo ogni 5 secondi */
+        }, 5000);
     </script>
 </body>
 

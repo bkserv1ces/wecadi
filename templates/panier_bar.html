@@ -63,14 +63,12 @@
 <body
   class="relative min-h-screen w-full flex flex-col items-center bg-bgDark text-white overflow-x-hidden font-sans pb-32">
 
-  <!-- Sfondo con immagine oscurata -->
   <div class="fixed inset-0 z-0 pointer-events-none">
     <img src="https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?q=80&w=2075&auto=format&fit=crop"
       alt="Rideaux Rouges" class="w-full h-full object-cover opacity-20">
     <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/95 to-black"></div>
   </div>
 
-  <!-- Header di navigazione -->
   <header class="relative z-30 w-full p-4 sm:p-6 flex justify-between items-center max-w-[900px]">
     <a href="/dashboard"
       class="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-600 text-[10px] sm:text-xs font-bold text-gray-400 tracking-[0.1em] uppercase hover:bg-white/5 hover:text-white transition duration-300">
@@ -81,7 +79,6 @@
 
   <main class="relative z-10 w-[95%] max-w-[600px] mt-4 flex flex-col">
 
-    <!-- Titolo della pagina -->
     <div class="text-center mb-8">
       <h1 class="text-4xl sm:text-5xl font-serif font-black text-gold-gradient tracking-wider mb-2">PRÉ-COMMANDES</h1>
       <p class="text-[10px] sm:text-xs text-gray-400 uppercase tracking-widest leading-relaxed">
@@ -89,7 +86,6 @@
       </p>
     </div>
 
-    <!-- Avviso per Ruinart -->
     <div
       class="bg-gold/10 border border-gold/30 rounded-xl p-4 mb-8 flex items-center justify-between shadow-[0_0_15px_rgba(212,175,55,0.15)]">
       <div class="flex items-center gap-3">
@@ -106,47 +102,70 @@
       </a>
     </div>
 
-    <!-- Contenitore principale del carrello -->
-    <form id="barForm" action="/valider_panier" method="POST"
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="w-full mb-6">
+      {% for category, message in messages %}
+      <div
+        class="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] sm:text-xs uppercase tracking-widest p-4 rounded-xl text-center shadow-[0_0_15px_rgba(239,68,68,0.2)] font-bold">
+        <i class="fa-solid fa-triangle-exclamation text-lg block mb-2"></i>
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form id="barForm" action="/resume_commande" method="POST"
       class="bg-black/60 backdrop-blur-md box-gold-border rounded-2xl p-4 sm:p-6 mb-8">
 
       <input type="hidden" name="cart_data" id="cart_data" value="{}">
 
-      <!-- Categoria: Champagnes & Vins -->
       <div class="mb-8">
         <h3
           class="text-gold font-bold uppercase tracking-widest text-xs border-b border-gold/30 pb-2 mb-4 flex items-center gap-2">
           <i class="fa-solid fa-wine-glass-empty"></i> Champagnes & Vins
         </h3>
-        <div class="space-y-4" id="category-vins">
-          <!-- Gli elementi verranno generati dinamicamente via JS -->
-        </div>
+        <div class="space-y-4" id="category-vins"></div>
       </div>
 
-      <!-- Categoria: Spiritueux -->
       <div class="mb-8">
         <h3
           class="text-gold font-bold uppercase tracking-widest text-xs border-b border-gold/30 pb-2 mb-4 flex items-center gap-2">
           <i class="fa-solid fa-whiskey-glass"></i> Spiritueux
         </h3>
-        <div class="space-y-4" id="category-spirits">
-        </div>
+        <div class="space-y-4" id="category-spirits"></div>
       </div>
 
-      <!-- Categoria: Softs -->
-      <div class="mb-4">
+      <div class="mb-8">
         <h3
           class="text-gold font-bold uppercase tracking-widest text-xs border-b border-gold/30 pb-2 mb-4 flex items-center gap-2">
           <i class="fa-solid fa-bottle-water"></i> Softs & Energisants
         </h3>
-        <div class="space-y-4" id="category-softs">
-        </div>
+        <div class="space-y-4" id="category-softs"></div>
       </div>
 
+      <div class="mb-4">
+        <h3
+          class="text-gold font-bold uppercase tracking-widest text-xs border-b border-gold/30 pb-2 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-utensils"></i> Nourriture
+        </h3>
+        <div class="space-y-4" id="category-food"></div>
+      </div>
+
+      <div class="mt-10 pt-8 border-t border-gold/30">
+        <label for="tavolo"
+          class="block text-gold font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-3">
+          <i class="fa-solid fa-chair text-lg"></i> Numéro de votre Table (1, 2, 3...)
+        </label>
+        <input type="number" id="tavolo" name="tavolo" required min="1" placeholder="Ex: 5"
+          class="w-full bg-black/80 border border-white/10 rounded-xl py-5 px-6 text-2xl font-mono font-bold text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition placeholder:text-gray-700 shadow-inner">
+        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2 ml-1">Ce numéro permet aux serveuses de vous
+          localiser.</p>
+      </div>
     </form>
   </main>
 
-  <!-- Barra fissa in basso (Sticky Bottom Bar per il totale) -->
   <div
     class="fixed bottom-0 left-0 w-full bg-bgDark border-t border-gold/30 p-4 sm:p-6 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
     <div class="max-w-[600px] mx-auto flex items-center justify-between">
@@ -162,34 +181,49 @@
   </div>
 
   <script>
-    /* Definizione dei prodotti (Database lato client) */
+    /* Nuovo Database (Senza Luc Belaire e con i nuovi prezzi) */
     const inventory = {
       vins: [
-        { id: 'moet', name: 'Moët', price: 100 },
+        { id: 'fior_arancio', name: "Fior D'Arancio (dolce)", price: 30 },
+        { id: 'colli_eugani', name: 'Colli Eugani (dolce)', price: 30 },
+        { id: 'martini', name: 'Martini (dolce)', price: 30 },
+        { id: 'ca_de_mari', name: 'Ca De Mari (Prosecco)', price: 30 },
+        { id: 'colligny', name: 'Colligny (champagne)', price: 75 },
+        { id: 'moet', name: 'Moët Chandon', price: 100 },
         { id: 'veuve', name: 'Veuve Clicquot', price: 100 },
-        { id: 'belaire', name: 'Luc Belaire', price: 80 },
-        { id: 'colligny', name: 'Colligny', price: 75 },
-        { id: 'prosecco', name: 'Prosecco', price: 30 },
-        { id: 'spumante', name: 'Spumante', price: 30 }
+        { id: 'ruinart', name: 'Ruinart (sur réservation)', price: 150 }
       ],
       spirits: [
-        { id: 'gold', name: 'Gold', price: 100 },
-        { id: 'black_label', name: 'Black Label', price: 75 },
-        { id: 'jack_daniel', name: 'Jack Daniel\'s', price: 70 },
         { id: 'vecchia_romagna', name: 'Vecchia Romagna', price: 40 },
-        { id: 'baileys', name: 'Baileys', price: 40 }
+        { id: 'bailey', name: 'Bailey', price: 50 },
+        { id: 'black_label', name: 'Black Label', price: 70 },
+        { id: 'gold_label', name: 'Gold Label', price: 100 },
+        { id: 'chivas_18', name: 'Chivas 18 ans', price: 120 }
       ],
       softs: [
-        /* Aggiunta delle regole per le promozioni (bundle) */
-        { id: 'redbull', name: 'Redbull', price: 4, bundleQty: 3, bundlePrice: 10, desc: '3 pour 10€ (ou 4€/u)' },
+        { id: 'eau', name: 'Eau', price: 1 },
         { id: 'coca', name: 'Coca', price: 5, bundleQty: 3, bundlePrice: 10, desc: '3 pour 10€' },
-        { id: 'malta', name: 'Malta', price: 5 },
-        { id: 'eau', name: 'Eau', price: 2, bundleQty: 3, bundlePrice: 5, desc: '3 pour 5€' }
+        { id: 'san_pellegrino', name: 'San Pellegrino', price: 5, bundleQty: 3, bundlePrice: 10, desc: '3 pour 10€' },
+        { id: 'redbull', name: 'Red Bull', price: 5 },
+        { id: 'malta', name: 'Malta Bouteille', price: 5 }
+      ],
+      food: [
+        { id: 'brochettes_porc', name: 'Brochettes Porc', price: 2 }
       ]
     };
 
     /* Inizializza il carrello recuperando i dati dal database tramite Jinja */
+    // Note: Flask/Jinja estrae la variabile 'existing_cart' passata dalla route Python
     let cart = {{ existing_cart | tojson | safe }};
+
+    /* Pulizia invisibile: Rimuove i vecchi prodotti (es. Luc Belaire) dal carrello dell'utente */
+    const allValidItems = [...inventory.vins, ...inventory.spirits, ...inventory.softs, ...inventory.food];
+    const validIds = allValidItems.map(i => i.id);
+    for (let key in cart) {
+      if (!validIds.includes(key)) {
+        delete cart[key];
+      }
+    }
 
     /* Funzione per generare l'HTML dei prodotti */
     function renderItems(categoryArray, containerId) {
@@ -197,7 +231,6 @@
       let html = '';
 
       categoryArray.forEach(item => {
-        /* Se il prodotto esiste già nel database, usa quella quantità, altrimenti 0 */
         let initialQty = cart[item.id] || 0;
         cart[item.id] = initialQty;
 
@@ -228,49 +261,37 @@
       container.innerHTML = html;
     }
 
-    /* Funzione per aggiornare la quantità e ricalcolare il totale */
     function updateQty(itemId, change) {
       let currentQty = cart[itemId];
       let newQty = currentQty + change;
-
-      /* Impedisci numeri negativi */
       if (newQty < 0) newQty = 0;
 
       cart[itemId] = newQty;
       document.getElementById(`qty-${itemId}`).innerText = newQty;
-
       calculateTotal();
     }
 
-    /* Funzione per calcolare il costo totale incluse le promozioni */
     function calculateTotal() {
       let total = 0;
       let totalItems = 0;
 
-      /* Unire tutte le categorie in un unico array per facilitare il calcolo */
-      const allItems = [...inventory.vins, ...inventory.spirits, ...inventory.softs];
-
-      allItems.forEach(item => {
+      allValidItems.forEach(item => {
         const qty = cart[item.id];
         totalItems += qty;
 
         if (qty > 0) {
-          /* Se il prodotto ha un'offerta bundle (es. 3 per 10€) */
           if (item.bundleQty && item.bundlePrice) {
             const bundles = Math.floor(qty / item.bundleQty);
             const remainder = qty % item.bundleQty;
             total += (bundles * item.bundlePrice) + (remainder * item.price);
           } else {
-            /* Calcolo standard */
             total += qty * item.price;
           }
         }
       });
 
-      /* Aggiorna il testo del totale nella UI */
       document.getElementById('total-price').innerText = total;
 
-      /* Abilita o disabilita il pulsante di validazione in base al carrello */
       const btn = document.getElementById('btn-submit');
       if (totalItems > 0) {
         btn.disabled = false;
@@ -281,9 +302,21 @@
       }
     }
 
-    /* Funzione per preparare i dati e inviare il form al server Flask */
     function submitCart() {
-      /* Filtra il carrello per inviare solo gli elementi con quantità > 0 */
+      // ---------------------------------------------------------
+      // MODIFICA: CONTROLLO VALIDITÀ FORM (NUMERO TAVOLO OBLIGATORIO)
+      // ---------------------------------------------------------
+      const form = document.getElementById('barForm');
+      const tavoloInput = document.getElementById('tavolo');
+
+      // Verifica nativa HTML5 (required)
+      if (!tavoloInput.checkValidity()) {
+        tavoloInput.reportValidity(); // Mostra il popup nativo "Remplissez ce champ"
+        tavoloInput.focus();
+        return;
+      }
+      // ---------------------------------------------------------
+
       let finalCart = {};
       for (const [id, qty] of Object.entries(cart)) {
         if (qty > 0) {
@@ -291,18 +324,22 @@
         }
       }
 
-      /* Inserisce l'oggetto JSON nel campo nascosto e invia il modulo */
+      // Controllo di sicurezza se il carrello è vuoto (non dovrebbe succedere col bottone disabilitato)
+      if (Object.keys(finalCart).length === 0) {
+        alert("Votre panier est vide.");
+        return;
+      }
+
       document.getElementById('cart_data').value = JSON.stringify(finalCart);
-      document.getElementById('barForm').submit();
+      form.submit();
     }
 
-    /* Inizializza l'interfaccia al caricamento della pagina */
     window.onload = function () {
       renderItems(inventory.vins, 'category-vins');
       renderItems(inventory.spirits, 'category-spirits');
       renderItems(inventory.softs, 'category-softs');
+      renderItems(inventory.food, 'category-food');
 
-      /* Calcola il totale all'avvio per sbloccare il bottone se l'utente sta modificando un ordine esistente */
       calculateTotal();
     };
   </script>

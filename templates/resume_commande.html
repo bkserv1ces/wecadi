@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WECADI Act 2 - Résumé de la Commande</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+                    colors: { gold: '#D4AF37', goldDark: '#997A00', goldLight: '#F3E5AB', bgDark: '#0a0a0a' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bgDark text-white min-h-screen font-sans flex flex-col items-center p-4">
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[#050505]"></div>
+        <div class="absolute top-0 right-1/4 w-64 h-64 bg-gold/5 rounded-full blur-[100px]"></div>
+    </div>
+
+    <main class="relative z-10 w-full max-w-[500px] mt-10">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-black text-gold uppercase tracking-widest">Vérification</h1>
+            <p class="text-xs text-gray-400 mt-2 uppercase tracking-[0.2em]">Votre commande pour la table <strong class="text-white text-lg ml-1">{{ tavolo }}</strong></p>
+        </div>
+
+        <div class="bg-black/60 border border-gold/30 rounded-2xl p-6 shadow-[0_0_20px_rgba(212,175,55,0.15)] mb-8">
+            <ul class="space-y-4 mb-6">
+                {% for b in boissons_details %}
+                <li class="flex justify-between items-center border-b border-white/10 pb-3 last:border-0">
+                    <span class="text-sm font-bold text-gray-200"><span class="text-gold">{{ b.qty }}x</span> {{ b.name }}</span>
+                    <span class="text-sm font-mono text-gray-400">{{ b.line_total }}€</span>
+                </li>
+                {% endfor %}
+            </ul>
+            
+            <div class="pt-4 border-t border-gold/30 flex justify-between items-center">
+                <span class="text-xs text-gray-400 uppercase tracking-widest font-bold">Total à régler :</span>
+                <span class="text-3xl text-gold font-black">{{ total }}€</span>
+            </div>
+        </div>
+
+        <form action="/confirmer_commande" method="POST" class="flex flex-col gap-4">
+            <input type="hidden" name="cart_data" value="{{ cart_json }}">
+            <input type="hidden" name="tavolo" value="{{ tavolo }}">
+            <input type="hidden" name="total" value="{{ total }}">
+            
+            <button type="submit" class="w-full py-4 bg-gradient-to-r from-goldDark via-gold to-goldLight text-black font-black uppercase tracking-widest text-xs rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.6)] transition-all">
+                Confirmer & Envoyer au Bar <i class="fa-solid fa-check ml-1"></i>
+            </button>
+            <a href="/panier_bar" class="w-full text-center py-4 border border-gray-600 text-gray-400 font-bold uppercase tracking-widest text-xs rounded-xl hover:bg-white/5 hover:text-white transition-all">
+                Modifier le panier
+            </a>
+        </form>
+    </main>
+</body>
+</html>

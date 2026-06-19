@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WECADI Act 2 - Écran Serveuse</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        /* Configurazione Tailwind */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    },
+                    colors: {
+                        gold: '#D4AF37',
+                        goldDark: '#997A00',
+                        goldLight: '#F3E5AB',
+                        bgDark: '#0a0a0a'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-bgDark text-white min-h-screen font-sans flex flex-col overflow-x-hidden">
+
+    <!-- Sfondo scuro per Mobile -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[#050505]"></div>
+        <div class="absolute top-1/4 left-0 w-64 h-64 bg-gold/5 rounded-full blur-[100px]"></div>
+    </div>
+
+    <!-- Header Mobile Sticky -->
+    <header class="relative z-30 bg-black/95 border-b border-gold/30 p-4 sticky top-0 flex justify-between items-center backdrop-blur-md shadow-lg">
+        <div>
+            <h1 class="text-lg font-serif font-black text-gold tracking-widest uppercase leading-none mb-1">Salle</h1>
+            <p class="text-[9px] text-gray-400 uppercase tracking-widest">
+                <i class="fa-solid fa-bell-concierge text-gold/50 mr-1"></i> {{ session.get('staff_nome', 'Serveuse') }}
+            </p>
+        </div>
+        <div class="flex flex-col items-end gap-1">
+            <button onclick="document.getElementById('menuModal').classList.remove('hidden')" class="px-3 py-1 bg-gold/10 text-gold border border-gold/30 rounded text-[9px] font-bold uppercase tracking-widest mb-1">
+                <i class="fa-solid fa-book-open"></i> Menu
+            </button>
+            <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/30 rounded text-[9px] uppercase font-bold tracking-widest">
+                Sacoche: <span id="sacoche-amount">0.0</span>€
+            </span>
+        </div>
+    </header>
+
+    <!-- Notifiche Flash -->
+    <div class="relative z-20 w-full px-4 mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="{% if category == 'error' %}bg-red-500/10 border-red-500/30 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.2)]{% else %}bg-green-500/10 border-green-500/30 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.2)]{% endif %} border text-[10px] sm:text-xs uppercase tracking-widest p-4 rounded-xl text-center mb-4 fade-out-msg font-bold">
+                {% if category == 'error' %}
+                    <i class="fa-solid fa-triangle-exclamation mr-1.5"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-check mr-1.5"></i>
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+            <script>
+                setTimeout(() => {
+                    document.querySelectorAll('.fade-out-msg').forEach(el => {
+                        el.style.opacity = '0';
+                        el.style.transition = 'opacity 0.5s ease';
+                        setTimeout(() => el.style.display = 'none', 500);
+                    });
+                }, 4000);
+            </script>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Dashboard Mobile -->
+    <main class="relative z-10 flex-1 w-full px-4 pb-10">
+        
+        <div class="mb-5 flex justify-between items-end mt-2">
+            <h2 class="text-xl font-black text-white uppercase tracking-widest">Actions Requises</h2>
+        </div>
+
+        <!-- Contenitore Ordini -->
+        <div id="orders-container" class="flex flex-col gap-5">
+            <!-- I dati vengono iniettati tramite JavaScript -->
+        </div>
+        
+        <!-- Stato Vuoto (Tutto tranquillo) -->
+        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-24 opacity-60">
+            <div class="w-20 h-20 rounded-full border border-gold/20 flex items-center justify-center mb-5 bg-black/40">
+                <i class="fa-solid fa-check-double text-3xl text-gold/30"></i>
+            </div>
+            <p class="text-[11px] text-gold uppercase tracking-widest font-bold mb-1">Aucune action en attente</p>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest text-center">Vous êtes à jour avec la salle et le bar.</p>
+        </div>
+
+        <div id="menuModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4">
+            <div class="bg-[#050507] w-full max-w-md border border-gold/30 rounded-xl flex flex-col max-h-[80vh]">
+                <div class="p-4 border-b border-gold/30 flex justify-between items-center">
+                    <h3 class="text-gold font-bold uppercase tracking-widest">Menu du Bar</h3>
+                    <button onclick="document.getElementById('menuModal').classList.add('hidden')" class="text-gray-400 hover:text-white">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-4 overflow-y-auto space-y-3">
+                    {% for key, item in inventory.items() %}
+                        <div class="flex justify-between items-center border-b border-white/5 pb-2 last:border-0">
+                            <span class="text-xs font-bold text-gray-200">{{ item.name }}</span>
+                            <span class="text-gold font-mono">{{ item.price }}€</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript - Polling e Rendering -->
+    <script>
+        function fetchOrders() {
+            fetch('/api/staff/updates')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) return;
+                    
+                    /* Aggiorna il valore della sacoche in tempo reale */
+                    if (data.cassa !== undefined) {
+                        document.getElementById('sacoche-amount').innerText = data.cassa;
+                    }
+                    
+                    /* Continua con il rendering degli ordini */
+                    renderOrders(data.commandes);
+                })
+                .catch(err => console.error("Erreur réseau:", err));
+        }
+
+        function renderOrders(orders) {
+            const container = document.getElementById('orders-container');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (orders.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            let html = '';
+            
+            orders.forEach(cmd => {
+                // Formatting drinks list
+                const drinks = cmd.ordine_testo.split(', ');
+                let drinksHtml = drinks.map(d => `
+                    <li class="flex items-start gap-2 py-1 border-b border-white/5 last:border-0">
+                        <i class="fa-solid fa-caret-right text-gold mt-1 text-[8px]"></i>
+                        <span class="text-xs font-bold text-gray-300 leading-tight">${d}</span>
+                    </li>
+                `).join('');
+
+                let badge = '';
+                let buttonHtml = '';
+                let cardStyles = '';
+                
+                // Logica visuale dipendente dallo stato dell'ordine
+                if (cmd.stato === 'À encaisser') {
+                    cardStyles = 'border-gold/40 bg-black/80 shadow-[0_0_15px_rgba(212,175,55,0.15)]';
+                    badge = `<span class="bg-gold/20 text-gold px-2.5 py-1 rounded text-[8px] uppercase tracking-[0.2em] font-bold border border-gold/30">Nouvelle Cmd</span>`;
+                    
+                    buttonHtml = `
+                    <a href="/staff/action/encaisse/${cmd.id}" 
+                       class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-goldDark via-gold to-goldLight text-black text-xs font-black uppercase tracking-widest rounded-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] transition duration-300 active:scale-95">
+                        <i class="fa-solid fa-hand-holding-dollar text-base"></i>
+                        Encaisser ${cmd.totale}€
+                    </a>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest text-center mt-2">
+                        Prenez l'argent avant de cliquer
+                    </p>`;
+                    
+                } else if (cmd.stato === 'Prêt au bar') {
+                    cardStyles = 'border-green-500/50 bg-black/80 shadow-[0_0_15px_rgba(34,197,94,0.15)]';
+                    badge = `<span class="bg-green-500/20 text-green-400 px-2.5 py-1 rounded text-[8px] uppercase tracking-[0.2em] font-bold border border-green-500/30 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Prêt au Bar</span>`;
+                    
+                    buttonHtml = `
+                    <a href="/staff/action/livre/${cmd.id}" 
+                       class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white text-xs font-black uppercase tracking-widest rounded-lg hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition duration-300 active:scale-95">
+                        <i class="fa-solid fa-check-to-slot text-base"></i>
+                        Marquer Livré
+                    </a>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest text-center mt-3">
+                        Encaisseuse : <strong class="text-white">${cmd.serveuse}</strong>
+                    </p>`;
+                }
+
+                html += `
+                <div class="border ${cardStyles} rounded-2xl p-5 flex flex-col relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Table</span>
+                            <span class="text-4xl font-black text-white leading-none">${cmd.tavolo}</span>
+                            <span class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">${cmd.nome_cliente || 'Client'}</span>
+                        </div>
+                        <div class="flex flex-col items-end gap-2">
+                            ${badge}
+                            ${cmd.stato === 'À encaisser' ? `<span class="text-2xl font-black text-gold">${cmd.totale}€</span>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white/5 rounded-lg p-3 mb-5 border border-white/5">
+                        <ul class="space-y-0.5">
+                            ${drinksHtml}
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        ${buttonHtml}
+                    </div>
+                </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Controllo automatico ogni 3 secondi (ottimale per reattività senza caricare il server)
+        setInterval(fetchOrders, 10000);
+        
+        // Avvio immediato
+        document.addEventListener('DOMContentLoaded', fetchOrders);
+    </script>
+</body>
+
+</html>

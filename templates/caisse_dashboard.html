@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WECADI Act 2 - Caisse Centrale</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    /* Configurazione Tailwind */
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          },
+          colors: {
+            gold: '#D4AF37',
+            goldDark: '#997A00',
+            goldLight: '#F3E5AB',
+            bgDark: '#0a0a0a'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bgDark text-white min-h-screen font-sans flex flex-col overflow-x-hidden">
+
+  <!-- Sfondo scuro -->
+  <div class="fixed inset-0 z-0 pointer-events-none">
+    <div class="absolute inset-0 bg-[#050505]"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-gold/5 rounded-full blur-[150px]"></div>
+  </div>
+
+  <!-- Header Fissa -->
+  <header
+    class="relative z-30 bg-black/90 border-b border-gold/30 p-4 sm:p-6 sticky top-0 flex justify-between items-center backdrop-blur-md">
+    <div>
+      <h1 class="text-xl sm:text-2xl font-serif font-black text-gold tracking-widest uppercase">Caisse Centrale</h1>
+      <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">
+        <i class="fa-solid fa-cash-register text-gold/50 mr-1"></i> Superviseur: {{ session.get('staff_nome', 'Admin
+        Caisse') }}
+      </p>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="/staff/logout"
+        class="px-4 py-2 border border-red-500/50 text-red-400 hover:text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-red-500/20 transition duration-300">
+        <i class="fa-solid fa-power-off sm:hidden"></i>
+        <span class="hidden sm:inline">Quitter la Caisse</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Notifiche Flash -->
+  <div class="relative z-20 w-full max-w-5xl mx-auto px-4 mt-6">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div
+      class="{% if category == 'error' %}bg-red-500/10 border-red-500/30 text-red-400{% else %}bg-green-500/10 border-green-500/30 text-green-400{% endif %} border text-xs uppercase tracking-widest p-4 rounded-xl text-center mb-4 fade-out-msg shadow-lg font-bold">
+      {% if category == 'error' %}
+      <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+      {% else %}
+      <i class="fa-solid fa-circle-check mr-2"></i>
+      {% endif %}
+      {{ message }}
+    </div>
+    {% endfor %}
+    <script>
+      setTimeout(() => {
+        document.querySelectorAll('.fade-out-msg').forEach(el => el.style.display = 'none');
+      }, 5000);
+    </script>
+    {% endif %}
+    {% endwith %}
+  </div>
+
+  <main class="relative z-10 flex-1 w-full max-w-5xl mx-auto p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    <!-- Colonne 1 : Formulaire de Versement -->
+    <div class="flex flex-col">
+            <div class="mb-6">
+        <h2 class="text-2xl font-black text-white uppercase tracking-widest">Enregistrer un Versement</h2>
+        <p class="text-xs text-gray-400 mt-1 leading-relaxed">Déchargez la sacoche des serveuses en enregistrant
+          l'argent liquide qu'elles vous remettent.</p>
+      </div>
+
+      <form action="/staff/action/versement" method="POST"
+        class="bg-black/80 border border-gold/40 rounded-2xl p-6 sm:p-8 shadow-[0_0_25px_rgba(212,175,55,0.15)] flex flex-col gap-6">
+
+        <div>
+          <div class="relative">
+            <div>
+
+              <div class="relative z-50" id="custom-select-container">
+                <label class="block text-[10px] text-gray-400 uppercase tracking-widest mb-2 font-bold">Sélectionner la
+                  Serveuse</label>
+                <input type="hidden" name="serveuse_nome" id="serveuse_nome_input" required>
+
+                <button type="button" id="custom-select-btn"
+                  class="w-full bg-black/50 border border-gold/30 rounded-xl py-4 pl-12 pr-6 text-white text-sm uppercase tracking-widest text-left focus:outline-none focus:border-gold transition flex justify-between items-center">
+                  <span id="custom-select-text" class="text-gray-500">Choisir dans la liste</span>
+                  <i class="fa-solid fa-chevron-down text-gold/50 transition-transform duration-300"
+                    id="custom-select-arrow"></i>
+                </button>
+                <i
+                  class="fa-solid fa-user-tag absolute left-4 top-[70%] transform -translate-y-1/2 text-gold/50 pointer-events-none"></i>
+
+                <div id="custom-select-dropdown"
+                  class="hidden absolute w-full mt-2 bg-[#0a0a0a] border border-gold/30 rounded-xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] overflow-hidden max-h-60 overflow-y-auto">
+                  {% for nome, dati in finances.items() %}
+                  <div
+                    class="custom-option px-5 py-4 hover:bg-gold/20 cursor-pointer border-b border-white/5 last:border-0 flex justify-between items-center transition"
+                    data-value="{{ nome }}">
+                    <span class="font-bold text-white uppercase tracking-widest text-sm">{{ nome }}</span>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">Reste: <span
+                        class="{% if dati.da_versare > 0 %}text-orange-400{% else %}text-green-400{% endif %} font-mono font-bold">{{
+                        dati.da_versare }}€</span></span>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="importo" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-2 font-bold">Montant
+            remis (en €)</label>
+          <div class="relative">
+            <i
+              class="fa-solid fa-euro-sign absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50 text-xl"></i>
+            <input type="number" step="0.50" min="1" id="importo" name="importo" required placeholder="0.00"
+              class="w-full bg-black/50 border border-gold/30 rounded-xl py-4 pl-12 pr-4 text-gold font-black text-2xl font-mono focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition placeholder:text-gray-700">
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-white/10 mt-2">
+          <button type="submit"
+            class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-goldDark via-gold to-goldLight text-black text-sm font-black uppercase tracking-widest rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.6)] transition duration-300 active:scale-95">
+            Encaisser
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="flex flex-col">
+      <div class="mb-6 md:mt-0 mt-8">
+        <h2
+          class="text-2xl font-black text-white uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-white">
+          État des Caisses</h2>
+        <p class="text-xs text-gray-400 mt-1">Argent liquide actuellement sur le personnel.</p>
+      </div>
+
+      <div class="space-y-4">
+        {% if finances %}
+        {% for nome, dati in finances.items() %}
+        <div
+          class="bg-white/5 border {% if dati.da_versare > 0 %}border-orange-500/30{% else %}border-green-500/30{% endif %} rounded-2xl p-5 flex flex-col relative overflow-hidden">
+
+          <div class="flex justify-between items-center mb-3">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full bg-black/50 border border-white/10 flex items-center justify-center">
+                <i class="fa-solid fa-user text-gold text-xs"></i>
+              </div>
+              <span class="font-bold uppercase tracking-widest text-sm">{{ nome }}</span>
+            </div>
+            <span class="text-[10px] uppercase text-gray-500 tracking-widest">Serveuse</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 border-t border-white/10 pt-3 text-center">
+            <div class="flex flex-col">
+              <span class="text-[9px] text-gray-500 uppercase tracking-widest">Encaissé</span>
+              <span class="font-mono text-xs text-white">{{ dati.incassato }}€</span>
+            </div>
+            <div class="flex flex-col border-l border-white/10">
+              <span class="text-[9px] text-gray-500 uppercase tracking-widest">Déposé</span>
+              <span class="font-mono text-xs text-green-400">{{ dati.versato }}€</span>
+            </div>
+            <div class="flex flex-col border-l border-white/10 bg-black/40 rounded">
+              <span class="text-[9px] text-gold uppercase tracking-widest">À verser</span>
+              <span
+                class="font-mono font-bold text-sm {% if dati.da_versare > 0 %}text-orange-400{% else %}text-gray-400{% endif %}">{{
+                dati.da_versare }}€</span>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="text-center py-12 border border-dashed border-white/10 rounded-2xl">
+          <p class="text-xs text-gray-500 uppercase tracking-widest">Aucune donnée financière</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div
+        class="bg-gradient-to-r from-goldDark via-gold to-goldLight p-[1px] rounded-2xl mb-6 shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+        <div class="bg-black/95 rounded-2xl p-6 flex justify-between items-center">
+          <div class="flex flex-col">
+            <span class="text-[10px] text-gold uppercase tracking-widest font-bold mb-1"><i
+                class="fa-solid fa-vault mr-1"></i> Total Caisse</span>
+            <span class="text-4xl font-black text-white font-mono">{{ totale_cassa_generale }}€</span>
+          </div>
+        </div>
+      </div>
+
+  </main>
+  <script>
+    const btn = document.getElementById('custom-select-btn');
+    const dropdown = document.getElementById('custom-select-dropdown');
+    const text = document.getElementById('custom-select-text');
+    const input = document.getElementById('serveuse_nome_input');
+    const arrow = document.getElementById('custom-select-arrow');
+    const options = document.querySelectorAll('.custom-option');
+
+    btn.addEventListener('click', () => {
+      dropdown.classList.toggle('hidden');
+      arrow.classList.toggle('rotate-180');
+    });
+
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        const val = option.getAttribute('data-value');
+        input.value = val;
+        text.innerText = val;
+        text.classList.remove('text-gray-500');
+        text.classList.add('text-white', 'font-bold');
+        dropdown.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+      });
+    });
+
+    // Fermer si on clique à l'extérieur
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('custom-select-container').contains(e.target)) {
+        dropdown.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+      }
+    });
+  </script>
+</body>
+
+</html>

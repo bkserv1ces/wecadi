@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WECADI Act 2 - Écran Barman</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        /* Configurazione Tailwind */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    },
+                    colors: {
+                        gold: '#D4AF37',
+                        goldDark: '#997A00',
+                        goldLight: '#F3E5AB',
+                        bgDark: '#0a0a0a'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-bgDark text-white min-h-screen font-sans flex flex-col overflow-x-hidden">
+
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[#050505]"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-[150px]"></div>
+    </div>
+
+    <header class="relative z-30 bg-black/90 border-b border-gold/30 p-4 sm:p-6 sticky top-0 flex justify-between items-center backdrop-blur-md">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-serif font-black text-gold tracking-widest uppercase">Bar Central</h1>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">
+                <i class="fa-solid fa-user-tie text-gold/50 mr-1"></i> Barman: {{ session.get('staff_nome', 'Équipe Bar') }}
+            </p>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-400 border border-green-500/30 rounded-full text-[10px] uppercase font-bold tracking-widest">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span> En Direct
+            </span>
+            <a href="/staff/logout" class="px-4 py-2 border border-red-500/50 text-red-400 hover:text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-red-500/20 transition duration-300">
+                <i class="fa-solid fa-power-off sm:hidden"></i>
+                <span class="hidden sm:inline">Quitter</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="relative z-20 w-full max-w-7xl mx-auto px-4 mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="{% if category == 'error' %}bg-red-500/10 border-red-500/30 text-red-400{% else %}bg-green-500/10 border-green-500/30 text-green-400{% endif %} border text-xs uppercase tracking-widest p-4 rounded-xl text-center shadow-[0_0_15px_rgba(34,197,94,0.2)] mb-4 fade-out-msg font-bold">
+                {% if category == 'error' %}
+                    <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-check mr-2"></i>
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+            <script>
+                // Fa scomparire i messaggi dopo 4 secondi
+                setTimeout(() => {
+                    document.querySelectorAll('.fade-out-msg').forEach(el => el.style.display = 'none');
+                }, 4000);
+            </script>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="relative z-10 flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <div class="flex w-full mb-8 border-b border-white/10">
+            <button id="tab-commandes" onclick="switchTab('commandes')" class="flex-1 pb-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-gold border-b-2 border-gold transition-colors duration-300">
+                <i class="fa-solid fa-list-check mr-2"></i> File d'attente
+            </button>
+            <button id="tab-inventaire" onclick="switchTab('inventaire')" class="flex-1 pb-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-gray-300 transition-colors duration-300">
+                <i class="fa-solid fa-boxes-stacked mr-2"></i> Gestion Magasin
+            </button>
+        </div>
+
+        <div id="pane-commandes" class="transition-opacity duration-300">
+            <div class="mb-6">
+                <h2 class="text-2xl font-black text-white uppercase tracking-widest">À Préparer</h2>
+                <p class="text-xs text-gray-400 mt-1">Commandes payées, en attente de préparation.</p>
+            </div>
+
+            <div id="orders-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                </div>
+            
+            <div id="empty-state" class="hidden flex flex-col items-center justify-center py-32 opacity-60">
+                <div class="w-24 h-24 rounded-full border border-gold/20 flex items-center justify-center mb-6 bg-black/40">
+                    <i class="fa-solid fa-martini-glass-citrus text-4xl text-gold/30"></i>
+                </div>
+                <p class="text-sm text-gold uppercase tracking-widest font-bold mb-2">Aucune commande en attente</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Le bar est à jour.</p>
+            </div>
+        </div>
+
+        <div id="pane-inventaire" class="hidden transition-opacity duration-300">
+            <div class="mb-6 flex justify-between items-end">
+                <div>
+                    <h2 class="text-2xl font-black text-white uppercase tracking-widest">Stock Magasin</h2>
+                    <p class="text-xs text-gray-400 mt-1">Saisissez les quantités disponibles. Elles diminueront à chaque commande validée.</p>
+                </div>
+            </div>
+
+            <form action="/staff/action/update_stock_bulk" method="POST">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {% for item_id, item in inventory.items() %}
+                    {% if not '(Ancien)' in item.name %}
+                    <div class="bg-black/60 border border-white/10 p-4 rounded-xl flex justify-between items-center shadow-lg hover:border-gold/30 transition">
+                        <label for="stock_{{ item_id }}" class="font-bold text-sm text-gray-200 uppercase tracking-widest">{{ item.name }}</label>
+                        <input type="number" min="0" id="stock_{{ item_id }}" name="stock_{{ item_id }}" value="{{ stock_db.get(item_id, 0) }}" 
+                            class="w-20 bg-black/80 border border-gold/30 rounded-lg py-2 text-center text-gold font-mono font-bold text-lg focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition">
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="mt-8 sticky bottom-6 z-40">
+                    <button type="submit" class="w-full md:w-auto md:px-12 py-4 bg-gradient-to-r from-goldDark via-gold to-goldLight text-black font-black uppercase tracking-widest text-sm rounded-xl hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition duration-300 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-floppy-disk"></i> Sauvegarder l'Inventaire
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <div id="magasinPasswordModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
+        <div class="bg-[#050507] w-full max-w-sm border border-gold/30 rounded-xl p-6 text-center shadow-[0_0_30px_rgba(212,175,55,0.15)]">
+            <div class="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-lock text-red-500 text-2xl"></i>
+            </div>
+            <h3 class="text-white font-bold uppercase tracking-widest mb-2">Accès Restreint</h3>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-6">Mot de passe requis pour modifier l'inventaire.</p>
+
+            <input type="password" id="magasin_pwd_input" placeholder="••••••••"
+                class="w-full bg-black/50 border border-gold/30 rounded-lg py-3 px-4 text-center text-white font-mono tracking-widest focus:outline-none focus:border-gold mb-4 transition">
+            
+            <p id="magasin_pwd_error" class="hidden text-red-500 text-[10px] font-bold uppercase tracking-widest mb-4">
+                <i class="fa-solid fa-circle-exclamation"></i> Mot de passe incorrect
+            </p>
+
+            <div class="flex gap-3">
+                <button onclick="closeMagasinModal()" class="flex-1 py-3 border border-gray-600 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest hover:text-white hover:bg-white/5 transition">Annuler</button>
+                <button onclick="verifyMagasinPassword()" class="flex-1 py-3 bg-gradient-to-r from-goldDark to-goldLight text-black rounded-lg text-xs font-black uppercase tracking-widest hover:shadow-[0_0_15px_rgba(212,175,55,0.5)] transition">Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ------------------------------------------------------------- */
+        /* Gestione dei Tab (Onglets)                                    */
+        /* ------------------------------------------------------------- */
+
+        /* Variabile per tracciare se il magazzino è sbloccato */
+        let isMagasinUnlocked = false;
+        
+        /* IMPOSTA QUI LA PASSWORD PER IL MAGAZZINO */
+        const MAGASIN_PASSWORD = "w26-wecadi";
+
+
+        function switchTab(tabName) {
+            /* Se si tenta di aprire l'inventario ed è bloccato, mostra la modale */
+            if (tabName === 'inventaire' && !isMagasinUnlocked) {
+                document.getElementById('magasinPasswordModal').classList.remove('hidden');
+                document.getElementById('magasin_pwd_input').value = '';
+                document.getElementById('magasin_pwd_error').classList.add('hidden');
+                document.getElementById('magasin_pwd_input').focus();
+                return; /* Interrompe la funzione qui, non cambia tab */
+            }
+
+            const btnCommandes = document.getElementById('tab-commandes');
+            const btnInventaire = document.getElementById('tab-inventaire');
+            const paneCommandes = document.getElementById('pane-commandes');
+            const paneInventaire = document.getElementById('pane-inventaire');
+
+            const activeClass = "flex-1 pb-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-gold border-b-2 border-gold transition-colors duration-300";
+            const inactiveClass = "flex-1 pb-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-gray-300 transition-colors duration-300";
+
+            if (tabName === 'commandes') {
+                btnCommandes.className = activeClass;
+                btnInventaire.className = inactiveClass;
+                paneInventaire.classList.add('hidden');
+                paneCommandes.classList.remove('hidden');
+            } else if (tabName === 'inventaire') {
+                btnInventaire.className = activeClass;
+                btnCommandes.className = inactiveClass;
+                paneCommandes.classList.add('hidden');
+                paneInventaire.classList.remove('hidden');
+            }
+        }
+
+        /* Funzioni per la modale della password */
+        function closeMagasinModal() {
+            document.getElementById('magasinPasswordModal').classList.add('hidden');
+        }
+
+        function verifyMagasinPassword() {
+            const inputVal = document.getElementById('magasin_pwd_input').value;
+            if (inputVal === MAGASIN_PASSWORD) {
+                isMagasinUnlocked = true; /* Sblocca l'accesso */
+                closeMagasinModal();
+                switchTab('inventaire'); /* Rilancia la funzione, questa volta passerà */
+            } else {
+                document.getElementById('magasin_pwd_error').classList.remove('hidden');
+            }
+        }
+
+        /* Permette di premere "Enter" sulla tastiera per confermare la password */
+        document.getElementById('magasin_pwd_input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                verifyMagasinPassword();
+            }
+        });
+
+        /* Controllo URL per mantenere il tab attivo senza chiedere la password dopo un salvataggio */
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('tab') === 'inventaire') {
+                isMagasinUnlocked = true; /* Mantiene lo sblocco se la pagina si è ricaricata dopo il salvataggio */
+                switchTab('inventaire');
+                /* Pulisce l'URL */
+                const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        };
+
+        /* ------------------------------------------------------------- */
+        /* Polling in Tempo Reale per la File d'Attente                  */
+        /* ------------------------------------------------------------- */
+        function fetchOrders() {
+            fetch('/api/staff/updates')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error("Erreur serveur:", data.error);
+                        return;
+                    }
+                    
+                    /* Aggiornamento Live dello Stock Magazzino */
+                    if (data.stock) {
+                        for (const [itemId, qty] of Object.entries(data.stock)) {
+                            const input = document.getElementById('stock_' + itemId);
+                            // Aggiorna il numero solo se il barman NON ci sta cliccando/scrivendo sopra in questo momento
+                            if (input && document.activeElement !== input) {
+                                input.value = qty;
+                            }
+                        }
+                    }
+
+                    /* Aggiornamento Live della coda ordini */
+                    renderOrders(data.commandes);
+                })
+                .catch(err => console.error("Erreur de connessione:", err));
+        }
+
+        function renderOrders(orders) {
+            const container = document.getElementById('orders-container');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (orders.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            let html = '';
+            
+            orders.forEach((cmd, index) => {
+                const drinks = cmd.ordine_testo.split(', ');
+                let drinksHtml = drinks.map(d => `
+                    <li class="flex items-start gap-2 py-1.5 border-b border-white/5 last:border-0">
+                        <i class="fa-solid fa-caret-right text-gold mt-1 text-[10px]"></i>
+                        <span class="text-sm font-bold text-gray-200">${d}</span>
+                    </li>
+                `).join('');
+                
+                let timeStr = "--:--";
+                if(cmd.created_at) {
+                    const d = new Date(cmd.created_at);
+                    timeStr = d.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+                }
+
+                const borderColor = index === 0 ? 'border-gold' : 'border-gold/20';
+                const shadow = index === 0 ? 'shadow-[0_0_20px_rgba(212,175,55,0.2)]' : 'shadow-lg';
+
+                html += `
+                <div class="bg-black/60 border ${borderColor} ${shadow} rounded-xl p-5 flex flex-col relative">
+                    <div class="flex justify-between items-start mb-5 pb-4 border-b border-white/10">
+                        <div>
+                            <span class="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Table</span>
+                            <span class="text-4xl font-black text-white leading-none">${cmd.tavolo}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[9px] text-gray-500 uppercase tracking-widest block mb-1"><i class="fa-regular fa-clock mr-1"></i>Reçu à</span>
+                            <span class="text-sm font-mono font-bold text-gold">${timeStr}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 mb-6">
+                        <ul class="space-y-1">
+                            ${drinksHtml}
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-auto pt-4 flex flex-col gap-3">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-widest bg-white/5 px-3 py-2 rounded">
+                            <i class="fa-solid fa-bell-concierge text-gold mr-1.5"></i> Serveuse: <strong class="text-white">${cmd.serveuse || 'Non assignée'}</strong>
+                        </div>
+                        
+                        <a href="/staff/action/prete/${cmd.id}" 
+                           class="w-full text-center py-3.5 bg-gradient-to-r from-goldDark via-gold to-goldLight text-black text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.6)] transition duration-300">
+                            <i class="fa-solid fa-check-double mr-1.5"></i> Valider la préparation
+                        </a>
+                    </div>
+                </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        setInterval(fetchOrders, 10000);
+        document.addEventListener('DOMContentLoaded', fetchOrders);
+    </script>
+</body>
+
+</html>

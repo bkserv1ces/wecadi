@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WECADI Act 2 - Portail Staff</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        /* Configurazione Tailwind */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        script: ['Great Vibes', 'cursive']
+                    },
+                    colors: {
+                        gold: '#D4AF37',
+                        goldDark: '#997A00',
+                        goldLight: '#F3E5AB',
+                        bgDark: '#0a0a0a',
+                        magentaCustom: '#E91E63'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .box-gold-border {
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(212, 175, 55, 0.05);
+        }
+    </style>
+</head>
+
+<body class="relative min-h-screen w-full flex flex-col items-center justify-center bg-bgDark text-white font-sans px-4">
+
+    <div class="fixed inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-black to-[#050505]"></div>
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-gold/5 rounded-full blur-[120px]"></div>
+    </div>
+
+    <main class="relative z-10 w-full max-w-md flex flex-col items-center">
+        
+        <div class="text-center mb-8">
+            <h1 class="text-4xl sm:text-5xl font-serif font-black text-white tracking-wider mb-2">
+                PORTAIL <span class="text-gold">STAFF</span>
+            </h1>
+            <p class="text-xs text-gray-400 uppercase tracking-[0.2em]">Identification de l'équipe</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="w-full mb-6">
+            {% for category, message in messages %}
+            <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-xs uppercase tracking-widest p-4 rounded-xl text-center shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                <i class="fa-solid fa-triangle-exclamation mr-2"></i> {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="w-full bg-black/80 backdrop-blur-md box-gold-border rounded-2xl p-6 sm:p-8">
+            <form action="{{ url_for('login_staff') }}" method="POST" class="space-y-6">
+                
+                <div>
+                    <label for="nome_staff" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-2 font-bold">Votre Prénom</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user-tag absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50"></i>
+                        <input type="text" id="nome_staff" name="nome_staff" required placeholder="Ex: Paule"
+                            class="w-full bg-black/50 border border-gold/30 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition">
+                    </div>
+                    <p class="text-[9px] text-gray-500 mt-1.5 italic">Nécessaire pour tracer les commandes traitées.</p>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-[10px] text-gray-400 uppercase tracking-widest mb-2 font-bold">Mot de passe de rôle</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gold/50"></i>
+                        <input type="password" id="password" name="password" required placeholder="••••••••"
+                            class="w-full bg-black/50 border border-gold/30 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition font-mono tracking-widest">
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-goldDark via-gold to-goldLight text-black font-black uppercase tracking-widest text-xs py-4 rounded-lg hover:shadow-[0_0_20px_rgba(212,175,55,0.6)] transition duration-300">
+                        Se connecter <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <a href="/" class="mt-8 text-[10px] text-gray-500 uppercase tracking-widest hover:text-white transition flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i> Retour à l'accueil
+        </a>
+
+    </main>
+
+</body>
+</html>
