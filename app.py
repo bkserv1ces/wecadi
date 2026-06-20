@@ -35,8 +35,8 @@ INVENTORY = {
     'chivas_18': {'name': 'Chivas 18 ans', 'price': 120},
     
     # NOURRITURE
-    'brochettes_porc': {'name': 'Brochettes Porc', 'price': 2},
-
+    'brochettes': {'name': 'Brochettes (gésier/bœuf)', 'price': 2},
+    
     # --- ANCIENS PRODUITS (Pour compatibilità dei vecchi ordini nel database) ---
     'belaire': {'name': 'Luc Belaire (Ancien)', 'price': 80},
     'prosecco': {'name': 'Prosecco (Ancien)', 'price': 30},
