@@ -435,7 +435,7 @@ def afficher_panier():
         'eau', 'coca', 'san_pellegrino', 'redbull', 'malta',
         'fior_arancio', 'colli_eugani', 'martini', 'ca_de_mari', 'colligny', 'moet', 'veuve', 'ruinart',
         'vecchia_romagna', 'bailey', 'black_label', 'gold_label', 'chivas_18',
-        'brochettes_porc'
+        'brochettes'
     ]
     cleaned_cart = {k: v for k, v in existing_cart.items() if k in PRODOTTI_ATTIVI and v > 0}
     
